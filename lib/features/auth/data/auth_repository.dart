@@ -10,14 +10,12 @@ class AuthRepository {
   AuthRepository(this._dio);
 
   Future<Map<String, dynamic>> login({
-    required String admissionNo,
+    required String identifier,
     required String password,
-    required String schoolCode,
   }) async {
     final response = await _dio.post('/auth/student/login', data: {
-      'admission_no': admissionNo,
+      'identifier': identifier,
       'password': password,
-      'school_code': schoolCode,
     });
 
     if (response.data['success'] == true) {

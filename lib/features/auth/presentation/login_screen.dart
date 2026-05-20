@@ -12,15 +12,13 @@ class LoginScreen extends ConsumerStatefulWidget {
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _schoolCodeController = TextEditingController();
-  final _admissionNoController = TextEditingController();
+  final _identifierController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
 
   @override
   void dispose() {
-    _schoolCodeController.dispose();
-    _admissionNoController.dispose();
+    _identifierController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -28,8 +26,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   void _handleLogin() {
     if (_formKey.currentState!.validate()) {
       ref.read(authProvider.notifier).login(
-            schoolCode: _schoolCodeController.text.trim(),
-            admissionNo: _admissionNoController.text.trim(),
+            identifier: _identifierController.text.trim(),
             password: _passwordController.text,
           );
     }
@@ -90,23 +87,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                 const SizedBox(height: 24),
                 TextFormField(
-                  controller: _schoolCodeController,
+                  controller: _identifierController,
                   decoration: const InputDecoration(
-                    labelText: 'School Code',
-                    prefixIcon: Icon(Icons.business),
-                  ),
-                  validator: (value) =>
-                      value?.isEmpty ?? true ? 'Please enter school code' : null,
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _admissionNoController,
-                  decoration: const InputDecoration(
-                    labelText: 'Admission Number',
+                    labelText: 'Email or Admission Number',
                     prefixIcon: Icon(Icons.person),
                   ),
                   validator: (value) =>
-                      value?.isEmpty ?? true ? 'Please enter admission number' : null,
+                      value?.isEmpty ?? true ? 'Please enter email or admission number' : null,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(

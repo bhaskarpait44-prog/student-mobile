@@ -1,5 +1,5 @@
 class AppConfig {
   static const String appName = 'EduCore Student';
-  static const String apiBaseUrl = 'http://localhost:5000/api'; // Change to server IP for mobile
-  static const String uploadsUrl = 'http://localhost:5000/uploads';
+  static const String apiBaseUrl = 'http://10.137.4.32:5000/api';
+  static const String uploadsUrl = 'http://10.137.4.32:5000/uploads';
 }

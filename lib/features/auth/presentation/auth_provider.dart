@@ -26,16 +26,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> login({
-    required String admissionNo,
+    required String identifier,
     required String password,
-    required String schoolCode,
   }) async {
     state = state.copyWith(isLoading: true, error: null);
     try {
       final result = await _repository.login(
-        admissionNo: admissionNo,
+        identifier: identifier,
         password: password,
-        schoolCode: schoolCode,
       );
       state = state.copyWith(
         user: result['user'],
