@@ -105,7 +105,7 @@ class ResultDetailScreen extends ConsumerWidget {
             const SizedBox(height: 4),
             Text(
               detail.examType,
-              style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 13),
+              style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 13),
             ),
             const SizedBox(height: 24),
             Row(
@@ -131,7 +131,7 @@ class ResultDetailScreen extends ConsumerWidget {
         ),
         Text(
           label,
-          style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 11),
+          style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 11),
         ),
       ],
     );

@@ -61,7 +61,7 @@ class ProfileScreen extends ConsumerWidget {
       children: [
         CircleAvatar(
           radius: 60,
-          backgroundColor: AppColors.primary.withOpacity(0.1),
+          backgroundColor: AppColors.primary.withValues(alpha: 0.1),
           backgroundImage: student.photoPath != null ? NetworkImage(student.photoPath!) : null,
           child: student.photoPath == null 
             ? const Icon(Icons.person, size: 60, color: AppColors.primary) 

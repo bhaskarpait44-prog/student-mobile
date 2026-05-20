@@ -74,7 +74,7 @@ class AttendanceBubbleStrip extends StatelessWidget {
                     width: 36,
                     height: 36,
                     decoration: BoxDecoration(
-                      color: color.withOpacity(0.1),
+                      color: color.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                       border: Border.all(color: color, width: 1.5),
                     ),
