@@ -9,12 +9,12 @@ class TimetableRepository {
     return response.data['data'];
   }
 
-  Future<List<dynamic>> getTodaySchedule() async {
+  Future<Map<String, dynamic>> getTodaySchedule() async {
     final response = await _dio.get('/student/timetable/today');
     return response.data['data'];
   }
 
-  Future<List<dynamic>> getExamSchedule() async {
+  Future<Map<String, dynamic>> getExamSchedule() async {
     final response = await _dio.get('/student/timetable/exam-schedule');
     return response.data['data'];
   }
@@ -24,7 +24,7 @@ class FeesRepository {
   final Dio _dio;
   FeesRepository(this._dio);
 
-  Future<List<dynamic>> getInvoices() async {
+  Future<Map<String, dynamic>> getInvoices() async {
     final response = await _dio.get('/student/fees');
     return response.data['data'];
   }
@@ -34,7 +34,7 @@ class FeesRepository {
     return response.data['data'];
   }
 
-  Future<List<dynamic>> getPayments() async {
+  Future<Map<String, dynamic>> getPayments() async {
     final response = await _dio.get('/student/fees/payments');
     return response.data['data'];
   }

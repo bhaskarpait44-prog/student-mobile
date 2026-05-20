@@ -60,7 +60,7 @@ class _AchievementCard extends StatelessWidget {
       icon = Icons.school;
       color = AppColors.primary;
     } else if (type.contains('attendance')) {
-      icon = Icons.calendar_check;
+      icon = Icons.event_available;
       color = AppColors.success;
     } else if (type.contains('sports') || type.contains('activity')) {
       icon = Icons.emoji_events;

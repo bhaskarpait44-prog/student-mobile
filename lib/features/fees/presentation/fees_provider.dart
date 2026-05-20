@@ -9,7 +9,8 @@ final feesRepositoryProvider = Provider<FeesRepository>((ref) {
 
 final feeInvoicesProvider = FutureProvider<List<FeeInvoice>>((ref) async {
   final data = await ref.watch(feesRepositoryProvider).getInvoices();
-  return data.map((e) => FeeInvoice.fromJson(e)).toList();
+  final list = (data['invoices'] as List? ?? []);
+  return list.map((e) => FeeInvoice.fromJson(e)).toList();
 });
 
 final feeSummaryProvider = FutureProvider<FeeSummary>((ref) async {
