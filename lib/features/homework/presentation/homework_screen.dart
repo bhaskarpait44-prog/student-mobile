@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import '../../../core/theme/app_colors.dart';
 import '../domain/homework_models.dart';
 import 'homework_provider.dart';
@@ -20,7 +19,7 @@ class _HomeworkScreenState extends ConsumerState<HomeworkScreen> {
     final homeworkAsync = ref.watch(homeworkListProvider(_selectedStatus));
 
     return Scaffold(
-      app_appBar: AppBar(
+      appBar: AppBar(
         title: const Text('Homework'),
       ),
       body: Column(

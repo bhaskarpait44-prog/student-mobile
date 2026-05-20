@@ -24,11 +24,10 @@ final apiClientProvider = Provider<Dio>((ref) {
 });
 
 class AuthInterceptor extends Interceptor {
-  final Ref _ref;
   final _storage = SecureStorage();
   bool _isRefreshing = false;
 
-  AuthInterceptor(this._ref);
+  AuthInterceptor(Ref ref);
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {

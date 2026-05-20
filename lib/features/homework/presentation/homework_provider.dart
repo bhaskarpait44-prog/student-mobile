@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/api/api_client.dart';
-import '../../core/repositories/homework_notice_repositories.dart';
+import '../../../core/api/api_client.dart';
+import '../../../core/repositories/homework_notice_repositories.dart';
 import '../domain/homework_models.dart';
 
 final homeworkRepositoryProvider = Provider<HomeworkRepository>((ref) {

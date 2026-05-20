@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/api/api_client.dart';
-import '../../core/repositories/student_repositories.dart';
+import '../../../core/api/api_client.dart';
+import '../../../core/repositories/student_repositories.dart';
 import '../domain/results_models.dart';
 
 final resultsRepositoryProvider = Provider<ResultsRepository>((ref) {
