@@ -221,7 +221,7 @@ class _ExamScheduleList extends StatelessWidget {
       itemCount: schedule.length,
       itemBuilder: (context, index) {
         final item = schedule[index];
-        final date = DateTime.parse(item.date);
+        final date = item.date.isNotEmpty ? DateTime.tryParse(item.date) : null;
         return Card(
           margin: const EdgeInsets.only(bottom: 12),
           child: ListTile(
@@ -236,7 +236,7 @@ class _ExamScheduleList extends StatelessWidget {
               child: const Icon(Icons.edit_document, color: AppColors.info),
             ),
             title: Text(item.subjectName, style: const TextStyle(fontWeight: FontWeight.bold)),
-            subtitle: Text(DateFormat('dd MMM yyyy').format(date)),
+            subtitle: date != null ? Text(DateFormat('dd MMM yyyy').format(date)) : const Text('Date TBA'),
             trailing: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,

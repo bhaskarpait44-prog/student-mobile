@@ -9,14 +9,32 @@ final timetableRepositoryProvider = Provider<TimetableRepository>((ref) {
 
 final weeklyTimetableProvider = FutureProvider<Map<String, List<TimetableSlot>>>((ref) async {
   final data = await ref.watch(timetableRepositoryProvider).getWeeklyTimetable();
+  final list = (data['timetable'] as List? ?? []);
+  
   final result = <String, List<TimetableSlot>>{};
-  data.forEach((key, value) {
-    result[key] = (value as List).map((e) => TimetableSlot.fromJson(e)).toList();
-  });
+  for (var item in list) {
+    final slot = TimetableSlot.fromJson(item);
+    final day = _capitalize(slot.dayOfWeek);
+    if (!result.containsKey(day)) {
+      result[day] = [];
+    }
+    result[day]!.add(slot);
+  }
   return result;
 });
 
+String _capitalize(String s) => s.isEmpty ? '' : s[0].toUpperCase() + s.substring(1).toLowerCase();
+
 final examScheduleProvider = FutureProvider<List<ExamScheduleItem>>((ref) async {
   final data = await ref.watch(timetableRepositoryProvider).getExamSchedule();
-  return data.map((e) => ExamScheduleItem.fromJson(e)).toList();
+  final exams = (data['exams'] as List? ?? []);
+  
+  final List<ExamScheduleItem> flattened = [];
+  for (var exam in exams) {
+    final timetable = (exam['timetable'] as List? ?? []);
+    for (var slot in timetable) {
+      flattened.add(ExamScheduleItem.fromJson(slot));
+    }
+  }
+  return flattened;
 });

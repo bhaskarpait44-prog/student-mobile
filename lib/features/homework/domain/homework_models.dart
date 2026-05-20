@@ -21,12 +21,12 @@ class HomeworkItem {
 
   factory HomeworkItem.fromJson(Map<String, dynamic> json) {
     return HomeworkItem(
-      id: json['id'],
-      title: json['title'],
-      subjectName: json['subject_name'] ?? json['subjectName'],
-      teacherName: json['teacher_name'] ?? json['teacherName'],
-      dueDate: json['due_date'] ?? json['dueDate'],
-      submissionType: json['submission_type'] ?? json['submissionType'],
+      id: json['id'] ?? 0,
+      title: json['title'] ?? '',
+      subjectName: json['subject_name'] ?? json['subjectName'] ?? '',
+      teacherName: json['teacher_name'] ?? json['teacherName'] ?? '',
+      dueDate: json['due_date'] ?? json['dueDate'] ?? '',
+      submissionType: json['submission_type'] ?? json['submissionType'] ?? 'online',
       submissionStatus: json['submission_status'] ?? json['submissionStatus'],
       description: json['description'],
     );
@@ -54,11 +54,11 @@ class Notice {
 
   factory Notice.fromJson(Map<String, dynamic> json) {
     return Notice(
-      id: json['id'],
-      title: json['title'],
+      id: json['id'] ?? 0,
+      title: json['title'] ?? '',
       content: json['content'],
-      noticeType: json['notice_type'] ?? json['noticeType'],
-      publishedAt: json['published_at'] ?? json['publishedAt'],
+      noticeType: json['notice_type'] ?? json['noticeType'] ?? 'general',
+      publishedAt: json['published_at'] ?? json['publishedAt'] ?? '',
       isPinned: json['is_pinned'] ?? json['isPinned'] ?? false,
       isRead: json['is_read'] ?? json['isRead'] ?? false,
     );

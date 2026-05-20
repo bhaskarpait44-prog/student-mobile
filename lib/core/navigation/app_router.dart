@@ -16,6 +16,10 @@ import '../../features/homework/presentation/homework_screen.dart';
 import '../../features/homework/presentation/notices_screen.dart';
 import '../../features/dashboard/presentation/more_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
+import '../../features/profile/presentation/history_screen.dart';
+import '../../features/profile/presentation/achievements_screen.dart';
+import '../../features/profile/presentation/change_password_screen.dart';
+import '../../features/dashboard/presentation/support_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authProvider);
@@ -94,6 +98,22 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/profile',
         builder: (context, state) => const ProfileScreen(),
+      ),
+      GoRoute(
+        path: '/history',
+        builder: (context, state) => const AcademicHistoryScreen(),
+      ),
+      GoRoute(
+        path: '/achievements',
+        builder: (context, state) => const AchievementsScreen(),
+      ),
+      GoRoute(
+        path: '/change-password',
+        builder: (context, state) => const ChangePasswordScreen(),
+      ),
+      GoRoute(
+        path: '/support',
+        builder: (context, state) => const HelpSupportScreen(),
       ),
     ],
   );

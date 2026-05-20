@@ -269,7 +269,8 @@ class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
       separatorBuilder: (context, index) => const Divider(height: 1, color: AppColors.border),
       itemBuilder: (context, index) {
         final day = list[index];
-        final date = DateTime.parse(day.date);
+        final date = day.date.isNotEmpty ? DateTime.tryParse(day.date) : null;
+        if (date == null) return const SizedBox();
         final color = _getStatusColor(day.status);
 
         return Padding(

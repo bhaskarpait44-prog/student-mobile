@@ -36,22 +36,22 @@ class AttendanceSummary {
 class MonthlyAttendance {
   final String month;
   final double percentage;
-  final int present;
-  final int total;
+  final int? present;
+  final int? total;
 
   MonthlyAttendance({
     required this.month,
     required this.percentage,
-    required this.present,
-    required this.total,
+    this.present,
+    this.total,
   });
 
   factory MonthlyAttendance.fromJson(Map<String, dynamic> json) {
     return MonthlyAttendance(
-      month: json['month'],
-      percentage: (json['percentage'] as num).toDouble(),
-      present: json['present'],
-      total: json['total'],
+      month: json['month_label'] ?? json['month'] ?? '',
+      percentage: (json['percentage'] as num? ?? 0).toDouble(),
+      present: json['present_days'] ?? json['present'],
+      total: json['working_days'] ?? json['total'],
     );
   }
 }
@@ -65,9 +65,9 @@ class AttendanceDay {
 
   factory AttendanceDay.fromJson(Map<String, dynamic> json) {
     return AttendanceDay(
-      date: json['date'],
-      status: json['status'],
-      remarks: json['remarks'],
+      date: json['date'] ?? '',
+      status: json['status'] ?? '',
+      remarks: json['override_reason'] ?? json['remarks'],
     );
   }
 }

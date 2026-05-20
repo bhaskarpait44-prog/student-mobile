@@ -68,7 +68,7 @@ class _NoticeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final date = DateTime.parse(notice.publishedAt);
+    final date = DateTime.tryParse(notice.publishedAt);
     final color = _getTypeColor(notice.noticeType);
 
     return Card(
@@ -103,7 +103,7 @@ class _NoticeCard extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    DateFormat('dd MMM').format(date),
+                    date != null ? DateFormat('dd MMM').format(date) : 'N/A',
                     style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
                   ),
                 ],

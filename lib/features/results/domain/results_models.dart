@@ -23,13 +23,13 @@ class ExamResult {
 
   factory ExamResult.fromJson(Map<String, dynamic> json) {
     return ExamResult(
-      examId: json['exam_id'] ?? json['examId'],
-      examName: json['exam_name'] ?? json['examName'],
+      examId: json['id'] ?? json['exam_id'] ?? json['examId'] ?? 0,
+      examName: json['name'] ?? json['exam_name'] ?? json['examName'] ?? '',
       examType: json['exam_type'] ?? json['examType'] ?? 'Regular',
       date: json['exam_date'] ?? json['date'] ?? '',
-      percentage: (json['percentage'] as num).toDouble(),
-      grade: json['grade'],
-      resultStatus: json['result_status'] ?? json['resultStatus'],
+      percentage: (json['percentage'] as num? ?? 0).toDouble(),
+      grade: json['grade'] ?? 'N/A',
+      resultStatus: json['result_status'] ?? json['resultStatus'] ?? '',
       isWithheld: json['is_withheld'] ?? json['isWithheld'] ?? false,
       totalPending: json['total_pending'] != null ? (json['total_pending'] as num).toDouble() : null,
     );
@@ -62,16 +62,30 @@ class ExamResultDetail {
   });
 
   factory ExamResultDetail.fromJson(Map<String, dynamic> json) {
+    final exam = json['exam'] ?? {};
+    final summary = json['summary'] ?? {};
+    final subjectList = (json['subjects'] as List? ?? [])
+        .map((e) => SubjectResult.fromJson(e))
+        .toList();
+
+    // Calculate totals if missing from summary
+    double calcTotal = 0;
+    double calcObtained = 0;
+    for (var s in subjectList) {
+      calcTotal += s.maxMarks;
+      calcObtained += s.obtainedMarks;
+    }
+
     return ExamResultDetail(
-      examId: json['exam_id'] ?? json['examId'],
-      examName: json['exam_name'] ?? json['examName'],
-      examType: json['exam_type'] ?? json['examType'],
-      subjects: (json['subjects'] as List).map((e) => SubjectResult.fromJson(e)).toList(),
-      totalMarks: (json['total_marks'] as num? ?? json['totalMarks'] as num? ?? 0).toDouble(),
-      obtainedMarks: (json['obtained_marks'] as num? ?? json['obtainedMarks'] as num? ?? 0).toDouble(),
-      percentage: (json['percentage'] as num? ?? 0).toDouble(),
-      grade: json['grade'] ?? '',
-      resultStatus: json['result_status'] ?? json['resultStatus'] ?? '',
+      examId: exam['id'] ?? json['exam_id'] ?? json['examId'] ?? 0,
+      examName: exam['name'] ?? json['exam_name'] ?? json['examName'] ?? '',
+      examType: exam['exam_type'] ?? json['exam_type'] ?? json['examType'] ?? '',
+      subjects: subjectList,
+      totalMarks: (summary['total_marks'] as num? ?? json['total_marks'] as num? ?? json['totalMarks'] as num? ?? calcTotal).toDouble(),
+      obtainedMarks: (summary['obtained_marks'] as num? ?? json['obtained_marks'] as num? ?? json['obtainedMarks'] as num? ?? calcObtained).toDouble(),
+      percentage: (summary['percentage'] as num? ?? json['percentage'] as num? ?? 0).toDouble(),
+      grade: summary['grade'] ?? json['grade'] ?? '',
+      resultStatus: summary['result_status'] ?? json['result_status'] ?? json['resultStatus'] ?? '',
       isWithheld: json['is_withheld'] ?? json['isWithheld'] ?? false,
     );
   }
@@ -96,8 +110,8 @@ class SubjectResult {
     return SubjectResult(
       subjectName: json['subject_name'] ?? json['subjectName'] ?? '',
       maxMarks: (json['total_marks'] as num? ?? json['maxMarks'] as num? ?? 0).toDouble(),
-      obtainedMarks: (json['marks_obtained'] as num? ?? json['obtainedMarks'] as num? ?? 0).toDouble(),
-      grade: json['grade'] ?? '',
+      obtainedMarks: (json['total_obtained'] as num? ?? json['marks_obtained'] as num? ?? json['obtainedMarks'] as num? ?? 0).toDouble(),
+      grade: json['grade'] ?? 'N/A',
       isPassed: json['is_pass'] ?? json['isPassed'] ?? true,
     );
   }

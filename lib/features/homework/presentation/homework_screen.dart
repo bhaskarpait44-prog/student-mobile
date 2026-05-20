@@ -94,7 +94,8 @@ class _HomeworkCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isOverdue = DateTime.parse(item.dueDate).isBefore(DateTime.now()) && item.submissionStatus != 'submitted';
+    final dueDate = DateTime.tryParse(item.dueDate);
+    final isOverdue = dueDate != null && dueDate.isBefore(DateTime.now()) && item.submissionStatus != 'submitted';
     
     return Card(
       margin: const EdgeInsets.only(bottom: 12),

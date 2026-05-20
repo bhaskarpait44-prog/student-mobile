@@ -8,7 +8,7 @@ class HomeworkRepository {
     final response = await _dio.get('/student/homework', queryParameters: {
       if (status != null) 'status': status,
     });
-    return response.data['data'];
+    return response.data['data']['items'] ?? response.data['data'] ?? [];
   }
 
   Future<Map<String, dynamic>> getHomeworkDetail(int id) async {
@@ -30,7 +30,7 @@ class NoticeRepository {
 
   Future<List<dynamic>> getNotices() async {
     final response = await _dio.get('/notices/student');
-    return response.data['data'];
+    return response.data['data']['notices'] ?? response.data['data'] ?? [];
   }
 
   Future<void> markAsRead(int id) async {
