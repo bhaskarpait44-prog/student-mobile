@@ -21,14 +21,14 @@ class AttendanceSummary {
 
   factory AttendanceSummary.fromJson(Map<String, dynamic> json) {
     return AttendanceSummary(
-      percentage: (json['percentage'] as num).toDouble(),
-      presentDays: json['presentDays'],
-      workingDays: json['workingDays'],
-      absentDays: json['absentDays'],
-      lateDays: json['lateDays'] ?? 0,
-      halfDays: json['halfDays'] ?? 0,
+      percentage: (json['percentage'] as num? ?? 0).toDouble(),
+      presentDays: json['present_days'] ?? 0,
+      workingDays: json['working_days'] ?? 0,
+      absentDays: json['absent_days'] ?? 0,
+      lateDays: json['late_days'] ?? 0,
+      halfDays: json['half_days'] ?? 0,
       holidays: json['holidays'] ?? 0,
-      daysNeededForMinimum: json['daysNeededForMinimum'] ?? 0,
+      daysNeededForMinimum: json['days_needed_for_minimum'] ?? 0,
     );
   }
 }

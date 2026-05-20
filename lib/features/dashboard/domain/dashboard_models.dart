@@ -29,15 +29,23 @@ class DashboardData {
     return DashboardData(
       student: StudentInfo.fromJson(json['student']),
       attendance: AttendanceSummary.fromJson(json['attendance']),
-      latestResult: json['latestResult'] != null ? ExamResult.fromJson(json['latestResult']) : null,
+      latestResult: json['latest_result'] != null ? ExamResult.fromJson(json['latest_result']) : null,
       fee: FeeSummary.fromJson(json['fee']),
-      classesToday: ClassesToday.fromJson(json['classesToday']),
-      todaySchedule: (json['todaySchedule'] as List).map((e) => SchedulePeriod.fromJson(e)).toList(),
-      recentAttendance: (json['recentAttendance'] as List).map((e) => AttendanceDay.fromJson(e)).toList(),
-      homeworkDueToday: (json['homeworkDueToday'] as List).map((e) => HomeworkItem.fromJson(e)).toList(),
+      classesToday: ClassesToday.fromJson(json['classes_today']),
+      todaySchedule: (json['today_schedule'] as List? ?? [])
+          .map((e) => SchedulePeriod.fromJson(e))
+          .toList(),
+      recentAttendance: (json['recent_attendance'] as List? ?? [])
+          .map((e) => AttendanceDay.fromJson(e))
+          .toList(),
+      homeworkDueToday: json['homework_due_today'] != null 
+          ? (json['homework_due_today']['items'] as List? ?? [])
+              .map((e) => HomeworkItem.fromJson(e))
+              .toList()
+          : [],
       motivational: json['motivational'] != null ? MotivationalMessage.fromJson(json['motivational']) : null,
-      birthdayBanner: json['birthdayBanner'] != null ? BirthdayBanner.fromJson(json['birthdayBanner']) : null,
-      today: json['today'],
+      birthdayBanner: json['birthday_banner'] != null ? BirthdayBanner.fromJson(json['birthday_banner']) : null,
+      today: json['today'] ?? '',
     );
   }
 }
@@ -63,13 +71,13 @@ class StudentInfo {
 
   factory StudentInfo.fromJson(Map<String, dynamic> json) {
     return StudentInfo(
-      name: json['name'],
-      className: json['className'],
-      sectionName: json['sectionName'],
-      rollNumber: json['rollNumber'],
-      sessionName: json['sessionName'],
-      admissionNo: json['admissionNo'],
-      photoPath: json['photoPath'],
+      name: json['name'] ?? '',
+      className: json['class_name'] ?? '',
+      sectionName: json['section_name'],
+      rollNumber: json['roll_number']?.toString(),
+      sessionName: json['session_name'] ?? '',
+      admissionNo: json['admission_no'] ?? '',
+      photoPath: json['photo_path'],
     );
   }
 }
@@ -91,17 +99,17 @@ class AttendanceSummary {
 
   factory AttendanceSummary.fromJson(Map<String, dynamic> json) {
     return AttendanceSummary(
-      percentage: (json['percentage'] as num).toDouble(),
-      presentDays: json['presentDays'],
-      workingDays: json['workingDays'],
-      absentDays: json['absentDays'],
-      daysNeededForMinimum: json['daysNeededForMinimum'] ?? 0,
+      percentage: (json['percentage'] as num? ?? 0).toDouble(),
+      presentDays: json['present_days'] ?? 0,
+      workingDays: json['working_days'] ?? 0,
+      absentDays: json['absent_days'] ?? 0,
+      daysNeededForMinimum: json['days_needed_for_minimum'] ?? 0,
     );
   }
 }
 
 class ExamResult {
-  final int examId;
+  final int? examId;
   final String examName;
   final double percentage;
   final String grade;
@@ -110,7 +118,7 @@ class ExamResult {
   final double? totalPending;
 
   ExamResult({
-    required this.examId,
+    this.examId,
     required this.examName,
     required this.percentage,
     required this.grade,
@@ -121,13 +129,13 @@ class ExamResult {
 
   factory ExamResult.fromJson(Map<String, dynamic> json) {
     return ExamResult(
-      examId: json['examId'],
-      examName: json['examName'],
-      percentage: (json['percentage'] as num).toDouble(),
-      grade: json['grade'],
-      resultStatus: json['resultStatus'],
-      isWithheld: json['isWithheld'] ?? false,
-      totalPending: json['totalPending'] != null ? (json['totalPending'] as num).toDouble() : null,
+      examId: json['exam_id'],
+      examName: json['exam_name'] ?? '',
+      percentage: (json['percentage'] as num? ?? 0).toDouble(),
+      grade: json['grade'] ?? '',
+      resultStatus: json['result_status'] ?? '',
+      isWithheld: json['is_withheld'] ?? false,
+      totalPending: json['total_pending'] != null ? (json['total_pending'] as num).toDouble() : null,
     );
   }
 }
@@ -145,9 +153,9 @@ class FeeSummary {
 
   factory FeeSummary.fromJson(Map<String, dynamic> json) {
     return FeeSummary(
-      totalPending: (json['totalPending'] as num).toDouble(),
-      totalPaid: (json['totalPaid'] as num).toDouble(),
-      nextDueDate: json['nextDueDate'],
+      totalPending: (json['total_pending'] as num? ?? 0).toDouble(),
+      totalPaid: (json['total_paid'] as num? ?? 0).toDouble(),
+      nextDueDate: json['next_due_date'],
     );
   }
 }
@@ -161,9 +169,9 @@ class ClassesToday {
 
   factory ClassesToday.fromJson(Map<String, dynamic> json) {
     return ClassesToday(
-      total: json['total'],
-      current: json['current'],
-      next: json['next'],
+      total: json['total_periods'] ?? 0,
+      current: json['current_period'] != null ? json['current_period']['subject_name'] : null,
+      next: json['next_period'] != null ? json['next_period']['subject_name'] : null,
     );
   }
 }
@@ -194,14 +202,14 @@ class SchedulePeriod {
   factory SchedulePeriod.fromJson(Map<String, dynamic> json) {
     return SchedulePeriod(
       id: json['id'],
-      periodNumber: json['periodNumber'],
-      subjectName: json['subjectName'],
-      teacherName: json['teacherName'],
-      startTime: json['startTime'],
-      endTime: json['endTime'],
-      roomNumber: json['roomNumber'],
-      status: json['status'],
-      countdownMinutes: json['countdownMinutes'],
+      periodNumber: json['period_number'],
+      subjectName: json['subject_name'] ?? '',
+      teacherName: json['teacher_name'] ?? '',
+      startTime: json['start_time'] ?? '',
+      endTime: json['end_time'] ?? '',
+      roomNumber: json['room_number'],
+      status: json['status'] ?? '',
+      countdownMinutes: json['countdown_minutes'],
     );
   }
 }
@@ -214,8 +222,8 @@ class AttendanceDay {
 
   factory AttendanceDay.fromJson(Map<String, dynamic> json) {
     return AttendanceDay(
-      date: json['date'],
-      status: json['status'],
+      date: json['date'] ?? '',
+      status: json['status'] ?? '',
     );
   }
 }
@@ -244,12 +252,12 @@ class HomeworkItem {
   factory HomeworkItem.fromJson(Map<String, dynamic> json) {
     return HomeworkItem(
       id: json['id'],
-      title: json['title'],
-      subjectName: json['subjectName'],
-      teacherName: json['teacherName'],
-      dueDate: json['dueDate'],
-      submissionType: json['submissionType'],
-      submissionStatus: json['submissionStatus'],
+      title: json['title'] ?? '',
+      subjectName: json['subject_name'] ?? '',
+      teacherName: json['teacher_name'] ?? '',
+      dueDate: json['due_date'] ?? '',
+      submissionType: json['submission_type'] ?? '',
+      submissionStatus: json['submission_status'],
       description: json['description'],
     );
   }
@@ -263,8 +271,8 @@ class MotivationalMessage {
 
   factory MotivationalMessage.fromJson(Map<String, dynamic> json) {
     return MotivationalMessage(
-      type: json['type'],
-      message: json['message'],
+      type: json['type'] ?? '',
+      message: json['message'] ?? '',
     );
   }
 }
@@ -277,7 +285,7 @@ class BirthdayBanner {
 
   factory BirthdayBanner.fromJson(Map<String, dynamic> json) {
     return BirthdayBanner(
-      message: json['message'],
+      message: json['title'] ?? json['message'] ?? '',
       image: json['image'],
     );
   }
@@ -301,10 +309,10 @@ class UpcomingEvent {
   factory UpcomingEvent.fromJson(Map<String, dynamic> json) {
     return UpcomingEvent(
       id: json['id'],
-      eventType: json['eventType'],
-      title: json['title'],
-      eventDate: json['eventDate'],
-      daysRemaining: json['daysRemaining'],
+      eventType: json['event_type'] ?? '',
+      title: json['title'] ?? '',
+      eventDate: json['event_date'] ?? '',
+      daysRemaining: json['days_remaining'] ?? 0,
     );
   }
 }
@@ -325,9 +333,9 @@ class Achievement {
   factory Achievement.fromJson(Map<String, dynamic> json) {
     return Achievement(
       id: json['id'],
-      achievementType: json['achievementType'],
-      earnedFor: json['earnedFor'],
-      earnedAt: json['earnedAt'],
+      achievementType: json['achievement_type'] ?? '',
+      earnedFor: json['earned_for'],
+      earnedAt: json['earned_at'] ?? '',
     );
   }
 }

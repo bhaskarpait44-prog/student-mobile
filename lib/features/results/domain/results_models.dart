@@ -63,16 +63,16 @@ class ExamResultDetail {
 
   factory ExamResultDetail.fromJson(Map<String, dynamic> json) {
     return ExamResultDetail(
-      examId: json['examId'],
-      examName: json['examName'],
-      examType: json['examType'],
+      examId: json['exam_id'] ?? json['examId'],
+      examName: json['exam_name'] ?? json['examName'],
+      examType: json['exam_type'] ?? json['examType'],
       subjects: (json['subjects'] as List).map((e) => SubjectResult.fromJson(e)).toList(),
-      totalMarks: (json['totalMarks'] as num).toDouble(),
-      obtainedMarks: (json['obtainedMarks'] as num).toDouble(),
-      percentage: (json['percentage'] as num).toDouble(),
-      grade: json['grade'],
-      resultStatus: json['resultStatus'],
-      isWithheld: json['isWithheld'] ?? false,
+      totalMarks: (json['total_marks'] as num? ?? json['totalMarks'] as num? ?? 0).toDouble(),
+      obtainedMarks: (json['obtained_marks'] as num? ?? json['obtainedMarks'] as num? ?? 0).toDouble(),
+      percentage: (json['percentage'] as num? ?? 0).toDouble(),
+      grade: json['grade'] ?? '',
+      resultStatus: json['result_status'] ?? json['resultStatus'] ?? '',
+      isWithheld: json['is_withheld'] ?? json['isWithheld'] ?? false,
     );
   }
 }
@@ -94,11 +94,11 @@ class SubjectResult {
 
   factory SubjectResult.fromJson(Map<String, dynamic> json) {
     return SubjectResult(
-      subjectName: json['subjectName'],
-      maxMarks: (json['maxMarks'] as num).toDouble(),
-      obtainedMarks: (json['obtainedMarks'] as num).toDouble(),
-      grade: json['grade'],
-      isPassed: json['isPassed'] ?? true,
+      subjectName: json['subject_name'] ?? json['subjectName'] ?? '',
+      maxMarks: (json['total_marks'] as num? ?? json['maxMarks'] as num? ?? 0).toDouble(),
+      obtainedMarks: (json['marks_obtained'] as num? ?? json['obtainedMarks'] as num? ?? 0).toDouble(),
+      grade: json['grade'] ?? '',
+      isPassed: json['is_pass'] ?? json['isPassed'] ?? true,
     );
   }
 }

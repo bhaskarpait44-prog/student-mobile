@@ -43,9 +43,9 @@ class FeeSummary {
 
   factory FeeSummary.fromJson(Map<String, dynamic> json) {
     return FeeSummary(
-      totalPending: (json['totalPending'] as num).toDouble(),
-      totalPaid: (json['totalPaid'] as num).toDouble(),
-      nextDueDate: json['nextDueDate'],
+      totalPending: (json['total_pending'] as num? ?? 0).toDouble(),
+      totalPaid: (json['total_paid'] as num? ?? 0).toDouble(),
+      nextDueDate: json['next_due_date'],
     );
   }
 }
