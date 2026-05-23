@@ -50,6 +50,7 @@ class Notice {
   final String? postedBy;
   final bool isPinned;
   final bool isRead;
+  final String source;
 
   Notice({
     required this.id,
@@ -60,6 +61,7 @@ class Notice {
     this.postedBy,
     required this.isPinned,
     required this.isRead,
+    required this.source,
   });
 
   factory Notice.fromJson(Map<String, dynamic> json) {
@@ -71,6 +73,17 @@ class Notice {
       return 0;
     }
 
+    bool toBool(dynamic value) {
+      if (value == null) return false;
+      if (value is bool) return value;
+      if (value is int) return value != 0;
+      if (value is String) {
+        final s = value.toLowerCase();
+        return s == 'true' || s == '1' || s == 't' || s == 'yes';
+      }
+      return false;
+    }
+
     return Notice(
       id: toInt(json['id']),
       title: json['title'] ?? '',
@@ -78,8 +91,9 @@ class Notice {
       noticeType: json['priority'] ?? json['notice_type'] ?? json['noticeType'] ?? 'general',
       publishedAt: json['created_at'] ?? json['published_at'] ?? json['publishedAt'] ?? '',
       postedBy: json['posted_by_name'] ?? json['postedBy'],
-      isPinned: json['is_pinned'] ?? json['isPinned'] ?? false,
-      isRead: json['is_read'] ?? json['isRead'] ?? false,
+      isPinned: toBool(json['is_pinned'] ?? json['isPinned']),
+      isRead: toBool(json['is_read'] ?? json['isRead']),
+      source: json['source'] ?? 'unified',
     );
   }
 }

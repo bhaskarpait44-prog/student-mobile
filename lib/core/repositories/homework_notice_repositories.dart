@@ -33,7 +33,9 @@ class NoticeRepository {
     return response.data['data']['notices'] ?? response.data['data'] ?? [];
   }
 
-  Future<void> markAsRead(int id) async {
-    await _dio.post('/notices/student/$id/read');
+  Future<void> markAsRead(int id, {String source = 'unified'}) async {
+    await _dio.post('/notices/student/$id/read', queryParameters: {
+      'source': source,
+    });
   }
 }

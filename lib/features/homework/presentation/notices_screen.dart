@@ -142,10 +142,14 @@ class _NoticeCard extends StatelessWidget {
 
   Color _getTypeColor(String type) {
     switch (type.toLowerCase()) {
-      case 'academic': return AppColors.primary;
-      case 'event': return AppColors.info;
+      case 'academic':
+      case 'general':
+      case 'normal': return AppColors.primary;
+      case 'event':
+      case 'info': return AppColors.info;
       case 'holiday': return AppColors.success;
-      case 'urgent': return AppColors.danger;
+      case 'urgent':
+      case 'warning': return AppColors.danger;
       default: return AppColors.textSecondary;
     }
   }
