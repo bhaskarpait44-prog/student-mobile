@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/auth_repository.dart';
 import '../domain/auth_models.dart';
 import '../../../core/api/api_client.dart';
+import '../../../core/services/notification_service.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   return AuthRepository(ref.watch(apiClientProvider));
@@ -30,6 +31,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
         storedPin: pin,
         isLoading: false,
       );
+      if (token != null) {
+        NotificationService.registerToken(token);
+      }
     } catch (e) {
       state = state.copyWith(
         user: null,
@@ -56,6 +60,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
         token: result['token'],
         isLoading: false,
       );
+      if (result['token'] != null) {
+        NotificationService.registerToken(result['token']);
+      }
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
     }
