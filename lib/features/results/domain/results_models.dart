@@ -22,16 +22,24 @@ class ExamResult {
   });
 
   factory ExamResult.fromJson(Map<String, dynamic> json) {
+    double toDouble(dynamic value) {
+      if (value == null) return 0.0;
+      if (value is double) return value;
+      if (value is int) return value.toDouble();
+      if (value is String) return double.tryParse(value) ?? 0.0;
+      return 0.0;
+    }
+
     return ExamResult(
       examId: json['id'] ?? json['exam_id'] ?? json['examId'] ?? 0,
       examName: json['name'] ?? json['exam_name'] ?? json['examName'] ?? '',
       examType: json['exam_type'] ?? json['examType'] ?? 'Regular',
       date: json['exam_date'] ?? json['date'] ?? '',
-      percentage: (json['percentage'] as num? ?? 0).toDouble(),
+      percentage: toDouble(json['percentage']),
       grade: json['grade'] ?? 'N/A',
       resultStatus: json['result_status'] ?? json['resultStatus'] ?? '',
       isWithheld: json['is_withheld'] ?? json['isWithheld'] ?? false,
-      totalPending: json['total_pending'] != null ? (json['total_pending'] as num).toDouble() : null,
+      totalPending: json['total_pending'] != null ? toDouble(json['total_pending']) : null,
     );
   }
 }
@@ -62,6 +70,14 @@ class ExamResultDetail {
   });
 
   factory ExamResultDetail.fromJson(Map<String, dynamic> json) {
+    double toDouble(dynamic value) {
+      if (value == null) return 0.0;
+      if (value is double) return value;
+      if (value is int) return value.toDouble();
+      if (value is String) return double.tryParse(value) ?? 0.0;
+      return 0.0;
+    }
+
     final exam = json['exam'] ?? {};
     final summary = json['summary'] ?? {};
     final subjectList = (json['subjects'] as List? ?? [])
@@ -81,9 +97,9 @@ class ExamResultDetail {
       examName: exam['name'] ?? json['exam_name'] ?? json['examName'] ?? '',
       examType: exam['exam_type'] ?? json['exam_type'] ?? json['examType'] ?? '',
       subjects: subjectList,
-      totalMarks: (summary['total_marks'] as num? ?? json['total_marks'] as num? ?? json['totalMarks'] as num? ?? calcTotal).toDouble(),
-      obtainedMarks: (summary['obtained_marks'] as num? ?? json['obtained_marks'] as num? ?? json['obtainedMarks'] as num? ?? calcObtained).toDouble(),
-      percentage: (summary['percentage'] as num? ?? json['percentage'] as num? ?? 0).toDouble(),
+      totalMarks: toDouble(summary['total_marks'] ?? json['total_marks'] ?? json['totalMarks'] ?? calcTotal),
+      obtainedMarks: toDouble(summary['obtained_marks'] ?? json['obtained_marks'] ?? json['obtainedMarks'] ?? calcObtained),
+      percentage: toDouble(summary['percentage'] ?? json['percentage'] ?? 0),
       grade: summary['grade'] ?? json['grade'] ?? '',
       resultStatus: summary['result_status'] ?? json['result_status'] ?? json['resultStatus'] ?? '',
       isWithheld: json['is_withheld'] ?? json['isWithheld'] ?? false,
@@ -107,10 +123,18 @@ class SubjectResult {
   });
 
   factory SubjectResult.fromJson(Map<String, dynamic> json) {
+    double toDouble(dynamic value) {
+      if (value == null) return 0.0;
+      if (value is double) return value;
+      if (value is int) return value.toDouble();
+      if (value is String) return double.tryParse(value) ?? 0.0;
+      return 0.0;
+    }
+
     return SubjectResult(
       subjectName: json['subject_name'] ?? json['subjectName'] ?? '',
-      maxMarks: (json['total_marks'] as num? ?? json['maxMarks'] as num? ?? 0).toDouble(),
-      obtainedMarks: (json['total_obtained'] as num? ?? json['marks_obtained'] as num? ?? json['obtainedMarks'] as num? ?? 0).toDouble(),
+      maxMarks: toDouble(json['total_marks'] ?? json['maxMarks']),
+      obtainedMarks: toDouble(json['total_obtained'] ?? json['marks_obtained'] ?? json['obtainedMarks']),
       grade: json['grade'] ?? 'N/A',
       isPassed: json['is_pass'] ?? json['isPassed'] ?? true,
     );

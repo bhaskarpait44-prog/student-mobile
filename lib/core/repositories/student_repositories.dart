@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:dio/dio.dart';
 
 class AttendanceRepository {
@@ -22,6 +23,18 @@ class AttendanceRepository {
     final response = await _dio.get('/student/attendance/trend');
     return response.data['data']['trend'] ?? [];
   }
+
+  Future<Uint8List> downloadAttendancePdf({String? fromDate, String? toDate}) async {
+    final response = await _dio.get(
+      '/student/attendance/export',
+      queryParameters: {
+        if (fromDate != null) 'from_date': fromDate,
+        if (toDate != null) 'to_date': toDate,
+      },
+      options: Options(responseType: ResponseType.bytes),
+    );
+    return Uint8List.fromList(response.data);
+  }
 }
 
 class ResultsRepository {
@@ -37,6 +50,14 @@ class ResultsRepository {
   Future<Map<String, dynamic>> getResultDetail(int examId) async {
     final response = await _dio.get('/student/results/$examId');
     return response.data['data'];
+  }
+
+  Future<Uint8List> downloadResultPdf(int examId) async {
+    final response = await _dio.get(
+      '/student/results/export/$examId',
+      options: Options(responseType: ResponseType.bytes),
+    );
+    return Uint8List.fromList(response.data);
   }
 }
 

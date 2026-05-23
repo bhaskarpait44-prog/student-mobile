@@ -15,6 +15,7 @@ import '../../features/results/presentation/result_detail_screen.dart';
 import '../../features/timetable/presentation/timetable_screen.dart';
 import '../../features/fees/presentation/fees_screen.dart';
 import '../../features/homework/presentation/homework_screen.dart';
+import '../../features/homework/presentation/homework_detail_screen.dart';
 import '../../features/homework/presentation/notices_screen.dart';
 import '../../features/dashboard/presentation/more_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
@@ -119,6 +120,15 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/homework',
         builder: (context, state) => const HomeworkScreen(),
+        routes: [
+          GoRoute(
+            path: ':id',
+            builder: (context, state) {
+              final id = int.parse(state.pathParameters['id']!);
+              return HomeworkDetailScreen(homeworkId: id);
+            },
+          ),
+        ],
       ),
       GoRoute(
         path: '/notices',

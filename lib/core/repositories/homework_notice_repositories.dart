@@ -8,7 +8,7 @@ class HomeworkRepository {
     final response = await _dio.get('/student/homework', queryParameters: {
       if (status != null) 'status': status,
     });
-    return response.data['data']['items'] ?? response.data['data'] ?? [];
+    return response.data['data']['homework'] ?? response.data['data']['items'] ?? response.data['data'] ?? [];
   }
 
   Future<Map<String, dynamic>> getHomeworkDetail(int id) async {

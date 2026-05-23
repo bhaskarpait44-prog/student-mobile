@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../shared/screens/pdf_viewer_screen.dart';
 import '../domain/attendance_models.dart';
 import 'attendance_provider.dart';
 
@@ -15,6 +16,38 @@ class AttendanceScreen extends ConsumerStatefulWidget {
 
 class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
   DateTime _selectedMonth = DateTime.now();
+
+  Future<void> _exportAttendance() async {
+    try {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
+      );
+
+      final bytes = await ref.read(attendanceRepositoryProvider).downloadAttendancePdf();
+      
+      if (mounted) {
+        Navigator.pop(context); // Pop loading
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PdfViewerScreen(
+              title: 'Attendance Report',
+              pdfBytes: bytes,
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        Navigator.pop(context); // Pop loading
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to export PDF: $e')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +64,7 @@ class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.file_download_outlined),
-            onPressed: () {
-              // TODO: Implement export
-            },
+            onPressed: _exportAttendance,
           ),
         ],
       ),

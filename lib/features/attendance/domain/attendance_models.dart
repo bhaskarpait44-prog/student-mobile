@@ -20,15 +20,25 @@ class AttendanceSummary {
   });
 
   factory AttendanceSummary.fromJson(Map<String, dynamic> json) {
+    int toInt(dynamic value) {
+      if (value == null) return 0;
+      if (value is int) return value;
+      if (value is String) return int.tryParse(value) ?? 0;
+      if (value is num) return value.toInt();
+      return 0;
+    }
+
     return AttendanceSummary(
-      percentage: (json['percentage'] as num? ?? 0).toDouble(),
-      presentDays: json['present_days'] ?? 0,
-      workingDays: json['working_days'] ?? 0,
-      absentDays: json['absent_days'] ?? 0,
-      lateDays: json['late_days'] ?? 0,
-      halfDays: json['half_days'] ?? 0,
-      holidays: json['holidays'] ?? 0,
-      daysNeededForMinimum: json['days_needed_for_minimum'] ?? 0,
+      percentage: (json['percentage'] is String 
+          ? double.tryParse(json['percentage']) 
+          : (json['percentage'] as num?))?.toDouble() ?? 0.0,
+      presentDays: toInt(json['present_days']),
+      workingDays: toInt(json['working_days']),
+      absentDays: toInt(json['absent_days']),
+      lateDays: toInt(json['late_days']),
+      halfDays: toInt(json['half_days']),
+      holidays: toInt(json['holidays']),
+      daysNeededForMinimum: toInt(json['days_needed_for_minimum']),
     );
   }
 }
@@ -47,11 +57,21 @@ class MonthlyAttendance {
   });
 
   factory MonthlyAttendance.fromJson(Map<String, dynamic> json) {
+    int? toInt(dynamic value) {
+      if (value == null) return null;
+      if (value is int) return value;
+      if (value is String) return int.tryParse(value);
+      if (value is num) return value.toInt();
+      return null;
+    }
+
     return MonthlyAttendance(
-      month: json['month_label'] ?? json['month'] ?? '',
-      percentage: (json['percentage'] as num? ?? 0).toDouble(),
-      present: json['present_days'] ?? json['present'],
-      total: json['working_days'] ?? json['total'],
+      month: json['month_label']?.toString() ?? json['month']?.toString() ?? '',
+      percentage: (json['percentage'] is String 
+          ? double.tryParse(json['percentage']) 
+          : (json['percentage'] as num?))?.toDouble() ?? 0.0,
+      present: toInt(json['present_days'] ?? json['present']),
+      total: toInt(json['working_days'] ?? json['total']),
     );
   }
 }

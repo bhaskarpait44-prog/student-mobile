@@ -98,12 +98,28 @@ class AttendanceSummary {
   });
 
   factory AttendanceSummary.fromJson(Map<String, dynamic> json) {
+    double toDouble(dynamic value) {
+      if (value == null) return 0.0;
+      if (value is double) return value;
+      if (value is int) return value.toDouble();
+      if (value is String) return double.tryParse(value) ?? 0.0;
+      return 0.0;
+    }
+
+    int toInt(dynamic value) {
+      if (value == null) return 0;
+      if (value is int) return value;
+      if (value is String) return int.tryParse(value) ?? 0;
+      if (value is num) return value.toInt();
+      return 0;
+    }
+
     return AttendanceSummary(
-      percentage: (json['percentage'] as num? ?? 0).toDouble(),
-      presentDays: json['present_days'] ?? 0,
-      workingDays: json['working_days'] ?? 0,
-      absentDays: json['absent_days'] ?? 0,
-      daysNeededForMinimum: json['days_needed_for_minimum'] ?? 0,
+      percentage: toDouble(json['percentage']),
+      presentDays: toInt(json['present_days']),
+      workingDays: toInt(json['working_days']),
+      absentDays: toInt(json['absent_days']),
+      daysNeededForMinimum: toInt(json['days_needed_for_minimum']),
     );
   }
 }
@@ -128,14 +144,22 @@ class ExamResult {
   });
 
   factory ExamResult.fromJson(Map<String, dynamic> json) {
+    double toDouble(dynamic value) {
+      if (value == null) return 0.0;
+      if (value is double) return value;
+      if (value is int) return value.toDouble();
+      if (value is String) return double.tryParse(value) ?? 0.0;
+      return 0.0;
+    }
+
     return ExamResult(
       examId: json['exam_id'],
       examName: json['exam_name'] ?? '',
-      percentage: (json['percentage'] as num? ?? 0).toDouble(),
+      percentage: toDouble(json['percentage']),
       grade: json['grade'] ?? '',
       resultStatus: json['result_status'] ?? '',
       isWithheld: json['is_withheld'] ?? false,
-      totalPending: json['total_pending'] != null ? (json['total_pending'] as num).toDouble() : null,
+      totalPending: json['total_pending'] != null ? toDouble(json['total_pending']) : null,
     );
   }
 }
@@ -152,9 +176,17 @@ class FeeSummary {
   });
 
   factory FeeSummary.fromJson(Map<String, dynamic> json) {
+    double toDouble(dynamic value) {
+      if (value == null) return 0.0;
+      if (value is double) return value;
+      if (value is int) return value.toDouble();
+      if (value is String) return double.tryParse(value) ?? 0.0;
+      return 0.0;
+    }
+
     return FeeSummary(
-      totalPending: (json['total_pending'] as num? ?? 0).toDouble(),
-      totalPaid: (json['total_paid'] as num? ?? 0).toDouble(),
+      totalPending: toDouble(json['total_pending']),
+      totalPaid: toDouble(json['total_paid']),
       nextDueDate: json['next_due_date'],
     );
   }

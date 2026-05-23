@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../shared/screens/pdf_viewer_screen.dart';
 import '../domain/results_models.dart';
 import 'results_provider.dart';
 
@@ -9,6 +10,38 @@ class ResultDetailScreen extends ConsumerWidget {
   final int examId;
 
   const ResultDetailScreen({super.key, required this.examId});
+
+  Future<void> _exportResult(BuildContext context, WidgetRef ref) async {
+    try {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
+      );
+
+      final bytes = await ref.read(resultsRepositoryProvider).downloadResultPdf(examId);
+      
+      if (context.mounted) {
+        Navigator.pop(context); // Pop loading
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PdfViewerScreen(
+              title: 'Report Card',
+              pdfBytes: bytes,
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        Navigator.pop(context); // Pop loading
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to export PDF: $e')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -20,9 +53,7 @@ class ResultDetailScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.picture_as_pdf_outlined),
-            onPressed: () {
-              // TODO: Implement report card download
-            },
+            onPressed: () => _exportResult(context, ref),
           ),
         ],
       ),

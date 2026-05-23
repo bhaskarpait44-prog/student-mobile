@@ -20,8 +20,16 @@ class HomeworkItem {
   });
 
   factory HomeworkItem.fromJson(Map<String, dynamic> json) {
+    int toInt(dynamic value) {
+      if (value == null) return 0;
+      if (value is int) return value;
+      if (value is String) return int.tryParse(value) ?? 0;
+      if (value is num) return value.toInt();
+      return 0;
+    }
+
     return HomeworkItem(
-      id: json['id'] ?? 0,
+      id: toInt(json['id']),
       title: json['title'] ?? '',
       subjectName: json['subject_name'] ?? json['subjectName'] ?? '',
       teacherName: json['teacher_name'] ?? json['teacherName'] ?? '',
@@ -55,8 +63,16 @@ class Notice {
   });
 
   factory Notice.fromJson(Map<String, dynamic> json) {
+    int toInt(dynamic value) {
+      if (value == null) return 0;
+      if (value is int) return value;
+      if (value is String) return int.tryParse(value) ?? 0;
+      if (value is num) return value.toInt();
+      return 0;
+    }
+
     return Notice(
-      id: json['id'] ?? 0,
+      id: toInt(json['id']),
       title: json['title'] ?? '',
       content: json['body'] ?? json['content'],
       noticeType: json['priority'] ?? json['notice_type'] ?? json['noticeType'] ?? 'general',

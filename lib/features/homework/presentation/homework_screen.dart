@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../domain/homework_models.dart';
 import 'homework_provider.dart';
@@ -136,9 +137,7 @@ class _HomeworkCard extends StatelessWidget {
           ],
         ),
         trailing: const Icon(Icons.chevron_right),
-        onTap: () {
-          // TODO: Open detail screen
-        },
+        onTap: () => context.push('/homework/${item.id}'),
       ),
     );
   }

@@ -50,10 +50,10 @@ class ExamScheduleItem {
 
   factory ExamScheduleItem.fromJson(Map<String, dynamic> json) {
     return ExamScheduleItem(
-      subjectName: json['subject_name'] ?? json['subjectName'],
-      date: json['date'],
-      startTime: json['start_time'] ?? json['startTime'],
-      endTime: json['end_time'] ?? json['endTime'],
+      subjectName: json['subject_name'] ?? json['subjectName'] ?? '',
+      date: json['exam_date'] ?? json['date'] ?? '',
+      startTime: json['start_time'] ?? json['startTime'] ?? '',
+      endTime: json['end_time'] ?? json['endTime'] ?? '',
       roomNumber: json['room_number'] ?? json['roomNumber'],
     );
   }
