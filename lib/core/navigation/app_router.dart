@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/auth_provider.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/splash_screen.dart';
+import '../../features/auth/presentation/pin_setup_screen.dart';
+import '../../features/auth/presentation/pin_login_screen.dart';
 import '../../features/dashboard/presentation/dashboard_screen.dart';
 import '../../shared/widgets/app_scaffold.dart';
 
@@ -29,13 +31,32 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final isLoading = authState.isLoading;
       final isLoggedIn = authState.isAuthenticated;
+      final hasPin = authState.hasPin;
+      final isPinAuthenticated = authState.isPinAuthenticated;
+      
       final isOnSplash = state.matchedLocation == '/splash';
       final isOnAuth = state.matchedLocation.startsWith('/auth');
+      final isOnPinSetup = state.matchedLocation == '/auth/pin-setup';
+      final isOnPinLogin = state.matchedLocation == '/auth/pin-login';
 
       if (isLoading) return isOnSplash ? null : '/splash';
 
-      if (!isLoggedIn && !isOnAuth) return '/auth/login';
-      if (isLoggedIn && (isOnAuth || isOnSplash)) return '/home';
+      if (!isLoggedIn) {
+        if (isOnAuth && !isOnPinSetup && !isOnPinLogin) return null;
+        return '/auth/login';
+      }
+
+      // Logged in
+      if (!hasPin) {
+        return isOnPinSetup ? null : '/auth/pin-setup';
+      }
+
+      if (!isPinAuthenticated) {
+        return isOnPinLogin ? null : '/auth/pin-login';
+      }
+
+      // Fully authenticated
+      if (isOnAuth || isOnSplash) return '/home';
 
       return null;
     },
@@ -47,6 +68,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/auth/login',
         builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/auth/pin-setup',
+        builder: (context, state) => const PinSetupScreen(),
+      ),
+      GoRoute(
+        path: '/auth/pin-login',
+        builder: (context, state) => const PinLoginScreen(),
       ),
       ShellRoute(
         builder: (context, state, child) => AppScaffold(child: child),

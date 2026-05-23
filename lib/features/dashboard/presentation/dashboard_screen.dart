@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../homework/presentation/homework_provider.dart';
 import 'dashboard_provider.dart';
 import 'widgets/stat_card.dart';
 import 'widgets/schedule_item.dart';
@@ -24,7 +26,7 @@ class DashboardScreen extends ConsumerWidget {
       body: RefreshIndicator(
         onRefresh: () => ref.refresh(dashboardProvider.future),
         child: dashboardAsync.when(
-          data: (data) => _buildDashboard(context, data),
+          data: (data) => _buildDashboard(context, ref, data),
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (err, stack) => Center(child: Text('Error: $err')),
         ),
@@ -32,12 +34,12 @@ class DashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildDashboard(BuildContext context, dynamic data) {
+  Widget _buildDashboard(BuildContext context, WidgetRef ref, dynamic data) {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _buildHeader(context, data),
+          _buildHeader(context, ref, data),
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
@@ -69,7 +71,7 @@ class DashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, dynamic data) {
+  Widget _buildHeader(BuildContext context, WidgetRef ref, dynamic data) {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 60, 20, 32),
       decoration: const BoxDecoration(
@@ -109,15 +111,21 @@ class DashboardScreen extends ConsumerWidget {
                   ),
                 ],
               ),
-              CircleAvatar(
-                radius: 28,
-                backgroundColor: Colors.white24,
-                backgroundImage: data.student.photoPath != null 
-                  ? NetworkImage(data.student.photoPath!) 
-                  : null,
-                child: data.student.photoPath == null 
-                  ? const Icon(Icons.person, color: Colors.white, size: 32) 
-                  : null,
+              Row(
+                children: [
+                  _buildNotificationIcon(context, ref),
+                  const SizedBox(width: 12),
+                  CircleAvatar(
+                    radius: 28,
+                    backgroundColor: Colors.white24,
+                    backgroundImage: data.student.photoPath != null 
+                      ? NetworkImage(data.student.photoPath!) 
+                      : null,
+                    child: data.student.photoPath == null 
+                      ? const Icon(Icons.person, color: Colors.white, size: 32) 
+                      : null,
+                  ),
+                ],
               ),
             ],
           ),
@@ -131,6 +139,50 @@ class DashboardScreen extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildNotificationIcon(BuildContext context, WidgetRef ref) {
+    final noticesAsync = ref.watch(noticesProvider);
+    final unreadCount = noticesAsync.when(
+      data: (notices) => notices.where((n) => !n.isRead).length,
+      loading: () => 0,
+      error: (_, __) => 0,
+    );
+
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        IconButton(
+          onPressed: () => context.push('/notices'),
+          icon: const Icon(Icons.notifications_outlined, color: Colors.white, size: 28),
+        ),
+        if (unreadCount > 0)
+          Positioned(
+            right: 8,
+            top: 8,
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: const BoxDecoration(
+                color: AppColors.danger,
+                shape: BoxShape.circle,
+              ),
+              constraints: const BoxConstraints(
+                minWidth: 16,
+                minHeight: 16,
+              ),
+              child: Text(
+                '$unreadCount',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+      ],
     );
   }
 

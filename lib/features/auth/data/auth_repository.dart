@@ -52,4 +52,16 @@ class AuthRepository {
   Future<String?> getSavedToken() async {
     return await _storage.getToken();
   }
+
+  Future<String?> getSavedPin() async {
+    return await _storage.getPin();
+  }
+
+  Future<void> savePin(String pin) async {
+    await _storage.savePin(pin);
+  }
+
+  Future<void> clearPin() async {
+    await _storage.clearPin();
+  }
 }

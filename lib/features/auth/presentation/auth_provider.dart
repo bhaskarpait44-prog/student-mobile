@@ -20,9 +20,25 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<void> _init() async {
     state = state.copyWith(isLoading: true);
-    final user = await _repository.getSavedUser();
-    final token = await _repository.getSavedToken();
-    state = state.copyWith(user: user, token: token, isLoading: false);
+    try {
+      final user = await _repository.getSavedUser();
+      final token = await _repository.getSavedToken();
+      final pin = await _repository.getSavedPin();
+      state = state.copyWith(
+        user: user,
+        token: token,
+        storedPin: pin,
+        isLoading: false,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        user: null,
+        token: null,
+        storedPin: null,
+        isLoading: false,
+        error: e.toString(),
+      );
+    }
   }
 
   Future<void> login({
@@ -43,6 +59,19 @@ class AuthNotifier extends StateNotifier<AuthState> {
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
     }
+  }
+
+  Future<void> setPin(String pin) async {
+    await _repository.savePin(pin);
+    state = state.copyWith(storedPin: pin, isPinAuthenticated: true);
+  }
+
+  bool verifyPin(String pin) {
+    if (state.storedPin == pin) {
+      state = state.copyWith(isPinAuthenticated: true);
+      return true;
+    }
+    return false;
   }
 
   Future<void> logout() async {

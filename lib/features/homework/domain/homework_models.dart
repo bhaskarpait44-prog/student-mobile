@@ -39,6 +39,7 @@ class Notice {
   final String? content;
   final String noticeType;
   final String publishedAt;
+  final String? postedBy;
   final bool isPinned;
   final bool isRead;
 
@@ -48,6 +49,7 @@ class Notice {
     this.content,
     required this.noticeType,
     required this.publishedAt,
+    this.postedBy,
     required this.isPinned,
     required this.isRead,
   });
@@ -56,9 +58,10 @@ class Notice {
     return Notice(
       id: json['id'] ?? 0,
       title: json['title'] ?? '',
-      content: json['content'],
-      noticeType: json['notice_type'] ?? json['noticeType'] ?? 'general',
-      publishedAt: json['published_at'] ?? json['publishedAt'] ?? '',
+      content: json['body'] ?? json['content'],
+      noticeType: json['priority'] ?? json['notice_type'] ?? json['noticeType'] ?? 'general',
+      publishedAt: json['created_at'] ?? json['published_at'] ?? json['publishedAt'] ?? '',
+      postedBy: json['posted_by_name'] ?? json['postedBy'],
       isPinned: json['is_pinned'] ?? json['isPinned'] ?? false,
       isRead: json['is_read'] ?? json['isRead'] ?? false,
     );

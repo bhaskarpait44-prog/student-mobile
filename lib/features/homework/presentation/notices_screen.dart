@@ -5,6 +5,8 @@ import '../../../core/theme/app_colors.dart';
 import '../domain/homework_models.dart';
 import 'homework_provider.dart';
 
+import 'notice_detail_screen.dart';
+
 class NoticesScreen extends ConsumerWidget {
   const NoticesScreen({super.key});
 
@@ -75,7 +77,12 @@ class _NoticeCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
         onTap: () {
-          // TODO: Open detail screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NoticeDetailScreen(notice: notice),
+            ),
+          );
         },
         borderRadius: BorderRadius.circular(16),
         child: Container(

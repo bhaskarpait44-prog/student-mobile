@@ -22,10 +22,10 @@ class AuthUser {
       id: json['id'],
       name: json['name'],
       role: json['role'] ?? 'student',
-      studentId: json['id'], // In the API response for student login, id is the studentId
-      schoolId: json['school_id'],
+      studentId: json['studentId'] ?? json['id'],
+      schoolId: json['school_id'] ?? json['schoolId'],
       email: json['email'],
-      admissionNo: json['admission_no'] ?? '',
+      admissionNo: json['admission_no'] ?? json['admissionNo'] ?? '',
     );
   }
 
@@ -45,27 +45,36 @@ class AuthState {
   final String? token;
   final bool isLoading;
   final String? error;
+  final String? storedPin;
+  final bool isPinAuthenticated;
 
   AuthState({
     this.user,
     this.token,
     this.isLoading = false,
     this.error,
+    this.storedPin,
+    this.isPinAuthenticated = false,
   });
 
   bool get isAuthenticated => user != null && token != null;
+  bool get hasPin => storedPin != null && storedPin!.isNotEmpty;
 
   AuthState copyWith({
     AuthUser? user,
     String? token,
     bool? isLoading,
     String? error,
+    String? storedPin,
+    bool? isPinAuthenticated,
   }) {
     return AuthState(
       user: user ?? this.user,
       token: token ?? this.token,
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
+      storedPin: storedPin ?? this.storedPin,
+      isPinAuthenticated: isPinAuthenticated ?? this.isPinAuthenticated,
     );
   }
 }
