@@ -64,6 +64,30 @@ class Notice {
     required this.source,
   });
 
+  Notice copyWith({
+    int? id,
+    String? title,
+    String? content,
+    String? noticeType,
+    String? publishedAt,
+    String? postedBy,
+    bool? isPinned,
+    bool? isRead,
+    String? source,
+  }) {
+    return Notice(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      noticeType: noticeType ?? this.noticeType,
+      publishedAt: publishedAt ?? this.publishedAt,
+      postedBy: postedBy ?? this.postedBy,
+      isPinned: isPinned ?? this.isPinned,
+      isRead: isRead ?? this.isRead,
+      source: source ?? this.source,
+    );
+  }
+
   factory Notice.fromJson(Map<String, dynamic> json) {
     int toInt(dynamic value) {
       if (value == null) return 0;

@@ -22,16 +22,7 @@ class _NoticeDetailScreenState extends ConsumerState<NoticeDetailScreen> {
 
   Future<void> _markAsRead() async {
     if (!widget.notice.isRead) {
-      try {
-        await ref.read(noticeRepositoryProvider).markAsRead(
-          widget.notice.id,
-          source: widget.notice.source,
-        );
-        // Refresh the notices list to update badges
-        ref.invalidate(noticesProvider);
-      } catch (e) {
-        debugPrint('Error marking notice as read: $e');
-      }
+      await ref.read(noticesProvider.notifier).markAsRead(widget.notice);
     }
   }
 

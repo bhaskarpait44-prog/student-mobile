@@ -7,31 +7,115 @@ import 'homework_provider.dart';
 
 import 'notice_detail_screen.dart';
 
-class NoticesScreen extends ConsumerWidget {
+class NoticesScreen extends ConsumerStatefulWidget {
   const NoticesScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<NoticesScreen> createState() => _NoticesScreenState();
+}
+
+class _NoticesScreenState extends ConsumerState<NoticesScreen> {
+  String _filter = 'all'; // all, unread, read, recent
+
+  @override
+  Widget build(BuildContext context) {
     final noticesAsync = ref.watch(noticesProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notices'),
+        actions: [
+          IconButton(
+            tooltip: 'Mark all as read',
+            icon: const Icon(Icons.done_all),
+            onPressed: () => ref.read(noticesProvider.notifier).markAllAsRead(),
+          ),
+        ],
       ),
-      body: RefreshIndicator(
-        onRefresh: () => ref.refresh(noticesProvider.future),
-        child: noticesAsync.when(
-          data: (notices) => _buildNoticesList(context, notices),
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (err, _) => Center(child: Text('Error: $err')),
-        ),
+      body: Column(
+        children: [
+          _buildFilterBar(),
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: () => ref.read(noticesProvider.notifier).fetchNotices(),
+              child: noticesAsync.when(
+                data: (notices) {
+                  final filtered = _applyFilter(notices);
+                  return _buildNoticesList(context, filtered);
+                },
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (err, _) => Center(child: Text('Error: $err')),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
+  Widget _buildFilterBar() {
+    return Container(
+      height: 50,
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        children: [
+          _filterChip('All', 'all'),
+          _filterChip('Unread', 'unread'),
+          _filterChip('Read', 'read'),
+          _filterChip('Recent', 'recent'),
+        ],
+      ),
+    );
+  }
+
+  Widget _filterChip(String label, String value) {
+    final isSelected = _filter == value;
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: ChoiceChip(
+        label: Text(label),
+        selected: isSelected,
+        onSelected: (selected) {
+          if (selected) setState(() => _filter = value);
+        },
+      ),
+    );
+  }
+
+  List<Notice> _applyFilter(List<Notice> notices) {
+    switch (_filter) {
+      case 'unread':
+        return notices.where((n) => !n.isRead).toList();
+      case 'read':
+        return notices.where((n) => n.isRead).toList();
+      case 'recent':
+        final sevenDaysAgo = DateTime.now().subtract(const Duration(days: 7));
+        return notices.where((n) {
+          final date = DateTime.tryParse(n.publishedAt);
+          return date != null && date.isAfter(sevenDaysAgo);
+        }).toList();
+      default:
+        return notices;
+    }
+  }
+
   Widget _buildNoticesList(BuildContext context, List<Notice> notices) {
     if (notices.isEmpty) {
-      return const Center(child: Text('No notices found.'));
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.notifications_off_outlined, size: 64, color: AppColors.textMuted.withValues(alpha: 0.5)),
+            const SizedBox(height: 16),
+            const Text(
+              'No notices found for this filter.',
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
+            ),
+          ],
+        ),
+      );
     }
 
     // Separate pinned and unpinned
@@ -39,23 +123,30 @@ class NoticesScreen extends ConsumerWidget {
     final others = notices.where((n) => !n.isPinned).toList();
 
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       children: [
         if (pinned.isNotEmpty) ...[
-          const Row(
-            children: [
-              Icon(Icons.push_pin, size: 16, color: AppColors.primary),
-              SizedBox(width: 8),
-              Text('Pinned Notices', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-            ],
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 12),
+            child: Row(
+              children: [
+                Icon(Icons.push_pin, size: 16, color: AppColors.primary),
+                SizedBox(width: 8),
+                Text('Pinned Notices', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+              ],
+            ),
           ),
-          const SizedBox(height: 12),
           ...pinned.map((n) => _NoticeCard(notice: n)),
-          const SizedBox(height: 24),
+          const SizedBox(height: 12),
         ],
         if (others.isNotEmpty) ...[
-          const Text('Recent Notices', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-          const SizedBox(height: 12),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Text(
+              _filter == 'all' ? 'Recent Notices' : '${_filter[0].toUpperCase()}${_filter.substring(1)} Notices',
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+            ),
+          ),
           ...others.map((n) => _NoticeCard(notice: n)),
         ],
       ],
