@@ -11,6 +11,15 @@ class SecureStorage {
   static const _refreshTokenKey = 'refresh_token';
   static const _userKey = 'user_data';
   static const _pinKey = 'user_pin';
+  static const _serverIpKey = 'server_ip';
+
+  Future<void> saveServerIp(String ip) async {
+    await _storage.write(key: _serverIpKey, value: ip);
+  }
+
+  Future<String?> getServerIp() async {
+    return await _storage.read(key: _serverIpKey);
+  }
 
   Future<void> saveToken(String token) async {
     await _storage.write(key: _tokenKey, value: token);

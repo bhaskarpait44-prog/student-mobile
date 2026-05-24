@@ -61,6 +61,14 @@ class AuthRepository {
     await _storage.savePin(pin);
   }
 
+  Future<void> saveServerIp(String ip) async {
+    await _storage.saveServerIp(ip);
+  }
+
+  Future<String?> getSavedServerIp() async {
+    return await _storage.getServerIp();
+  }
+
   Future<void> clearPin() async {
     await _storage.clearPin();
   }
