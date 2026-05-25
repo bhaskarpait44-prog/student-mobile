@@ -56,6 +56,13 @@ class HistoryRecord {
   });
 
   factory HistoryRecord.fromJson(Map<String, dynamic> json) {
+    double toDouble(dynamic value) {
+      if (value == null) return 0.0;
+      if (value is num) return value.toDouble();
+      if (value is String) return double.tryParse(value) ?? 0.0;
+      return 0.0;
+    }
+
     return HistoryRecord(
       enrollmentId: json['enrollment_id'] ?? 0,
       sessionName: json['session_name'] ?? '',
@@ -66,10 +73,10 @@ class HistoryRecord {
       joinedDate: json['joined_date'],
       leftDate: json['left_date'],
       result: json['result'],
-      percentage: json['percentage'] != null ? (json['percentage'] as num).toDouble() : null,
+      percentage: json['percentage'] != null ? toDouble(json['percentage']) : null,
       grade: json['grade'],
       isPromoted: json['is_promoted'] ?? false,
-      attendancePercentage: (json['attendance_percentage'] as num? ?? 0).toDouble(),
+      attendancePercentage: toDouble(json['attendance_percentage']),
     );
   }
 }
@@ -92,12 +99,19 @@ class TimelineItem {
   });
 
   factory TimelineItem.fromJson(Map<String, dynamic> json) {
+    double toDouble(dynamic value) {
+      if (value == null) return 0.0;
+      if (value is num) return value.toDouble();
+      if (value is String) return double.tryParse(value) ?? 0.0;
+      return 0.0;
+    }
+
     return TimelineItem(
       sessionName: json['session_name'] ?? '',
       className: json['class_name'] ?? '',
       sectionName: json['section_name'] ?? '',
       result: json['result'],
-      attendancePercentage: (json['attendance_percentage'] as num? ?? 0).toDouble(),
+      attendancePercentage: toDouble(json['attendance_percentage']),
       promoted: json['promoted'] ?? false,
     );
   }
@@ -113,9 +127,16 @@ class PerformanceTrend {
   });
 
   factory PerformanceTrend.fromJson(Map<String, dynamic> json) {
+    double toDouble(dynamic value) {
+      if (value == null) return 0.0;
+      if (value is num) return value.toDouble();
+      if (value is String) return double.tryParse(value) ?? 0.0;
+      return 0.0;
+    }
+
     return PerformanceTrend(
       sessionName: json['session_name'] ?? '',
-      percentage: (json['percentage'] as num? ?? 0).toDouble(),
+      percentage: toDouble(json['percentage']),
     );
   }
 }

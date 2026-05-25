@@ -20,6 +20,13 @@ class AttendanceSummary {
   });
 
   factory AttendanceSummary.fromJson(Map<String, dynamic> json) {
+    double toDouble(dynamic value) {
+      if (value == null) return 0.0;
+      if (value is num) return value.toDouble();
+      if (value is String) return double.tryParse(value) ?? 0.0;
+      return 0.0;
+    }
+
     int toInt(dynamic value) {
       if (value == null) return 0;
       if (value is int) return value;
@@ -29,9 +36,7 @@ class AttendanceSummary {
     }
 
     return AttendanceSummary(
-      percentage: (json['percentage'] is String 
-          ? double.tryParse(json['percentage']) 
-          : (json['percentage'] as num?))?.toDouble() ?? 0.0,
+      percentage: toDouble(json['percentage']),
       presentDays: toInt(json['present_days']),
       workingDays: toInt(json['working_days']),
       absentDays: toInt(json['absent_days']),
@@ -57,6 +62,13 @@ class MonthlyAttendance {
   });
 
   factory MonthlyAttendance.fromJson(Map<String, dynamic> json) {
+    double toDouble(dynamic value) {
+      if (value == null) return 0.0;
+      if (value is num) return value.toDouble();
+      if (value is String) return double.tryParse(value) ?? 0.0;
+      return 0.0;
+    }
+
     int? toInt(dynamic value) {
       if (value == null) return null;
       if (value is int) return value;
@@ -67,9 +79,7 @@ class MonthlyAttendance {
 
     return MonthlyAttendance(
       month: json['month_label']?.toString() ?? json['month']?.toString() ?? '',
-      percentage: (json['percentage'] is String 
-          ? double.tryParse(json['percentage']) 
-          : (json['percentage'] as num?))?.toDouble() ?? 0.0,
+      percentage: toDouble(json['percentage']),
       present: toInt(json['present_days'] ?? json['present']),
       total: toInt(json['working_days'] ?? json['total']),
     );

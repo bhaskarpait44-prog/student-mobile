@@ -24,12 +24,19 @@ class FeeInvoice {
   });
 
   factory FeeInvoice.fromJson(Map<String, dynamic> json) {
+    double toDouble(dynamic value) {
+      if (value == null) return 0.0;
+      if (value is num) return value.toDouble();
+      if (value is String) return double.tryParse(value) ?? 0.0;
+      return 0.0;
+    }
+
     return FeeInvoice(
       id: json['id'],
       feeType: json['fee_type_name'] ?? json['fee_type'] ?? json['feeType'],
-      amount: (json['amount_due'] as num? ?? json['amount'] as num).toDouble(),
-      paid: (json['amount_paid'] as num? ?? json['paid'] as num).toDouble(),
-      pending: (json['balance_remaining'] as num? ?? json['pending'] as num).toDouble(),
+      amount: toDouble(json['amount_due'] ?? json['amount']),
+      paid: toDouble(json['amount_paid'] ?? json['paid']),
+      pending: toDouble(json['balance_remaining'] ?? json['pending']),
       dueDate: json['due_date'] ?? json['dueDate'],
       status: json['status'],
       upiLatestStatus: json['upi_latest_status'],
@@ -73,10 +80,17 @@ class UpiPaymentRequest {
   });
 
   factory UpiPaymentRequest.fromJson(Map<String, dynamic> json) {
+    double toDouble(dynamic value) {
+      if (value == null) return 0.0;
+      if (value is num) return value.toDouble();
+      if (value is String) return double.tryParse(value) ?? 0.0;
+      return 0.0;
+    }
+
     return UpiPaymentRequest(
       id: json['id'],
       invoiceId: json['invoice_id'],
-      amount: (json['amount'] as num).toDouble(),
+      amount: toDouble(json['amount']),
       upiTransactionId: json['upi_transaction_id'],
       status: json['status'],
       createdAt: json['created_at'],
@@ -97,9 +111,16 @@ class FeeSummary {
   });
 
   factory FeeSummary.fromJson(Map<String, dynamic> json) {
+    double toDouble(dynamic value) {
+      if (value == null) return 0.0;
+      if (value is num) return value.toDouble();
+      if (value is String) return double.tryParse(value) ?? 0.0;
+      return 0.0;
+    }
+
     return FeeSummary(
-      totalPending: (json['total_pending'] as num? ?? 0).toDouble(),
-      totalPaid: (json['total_paid'] as num? ?? 0).toDouble(),
+      totalPending: toDouble(json['total_pending']),
+      totalPaid: toDouble(json['total_paid']),
       nextDueDate: json['next_due_date'],
     );
   }
