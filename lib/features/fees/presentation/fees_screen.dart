@@ -7,6 +7,8 @@ import 'fees_provider.dart';
 import 'upi_payment_sheet.dart';
 import 'upi_request_history_screen.dart';
 
+import 'package:go_router/go_router.dart';
+
 class FeesScreen extends ConsumerWidget {
   const FeesScreen({super.key});
 
@@ -21,12 +23,7 @@ class FeesScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.history),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const UpiRequestHistoryScreen()),
-              );
-            },
+            onPressed: () => context.push('/fees/history'),
           ),
         ],
       ),
