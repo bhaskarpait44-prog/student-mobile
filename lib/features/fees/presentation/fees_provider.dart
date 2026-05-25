@@ -17,3 +17,42 @@ final feeSummaryProvider = FutureProvider<FeeSummary>((ref) async {
   final data = await ref.watch(feesRepositoryProvider).getFeeSummary();
   return FeeSummary.fromJson(data);
 });
+
+final schoolUpiInfoProvider = FutureProvider<SchoolUpiInfo>((ref) async {
+  final data = await ref.watch(feesRepositoryProvider).getSchoolUpiInfo();
+  return SchoolUpiInfo.fromJson(data);
+});
+
+final myUpiRequestsProvider = FutureProvider<List<UpiPaymentRequest>>((ref) async {
+  final list = await ref.watch(feesRepositoryProvider).getMyUpiRequests();
+  return list.map((e) => UpiPaymentRequest.fromJson(e)).toList();
+});
+
+class UpiPaymentNotifier extends StateNotifier<AsyncValue<void>> {
+  final FeesRepository _repository;
+  UpiPaymentNotifier(this._repository) : super(const AsyncValue.data(null));
+
+  Future<void> submit({
+    required int invoiceId,
+    required double amount,
+    required String upiTransactionId,
+    String? note,
+  }) async {
+    state = const AsyncValue.loading();
+    try {
+      await _repository.submitUpiPaymentRequest(
+        invoiceId: invoiceId,
+        amount: amount,
+        upiTransactionId: upiTransactionId,
+        note: note,
+      );
+      state = const AsyncValue.data(null);
+    } catch (err, stack) {
+      state = AsyncValue.error(err, stack);
+    }
+  }
+}
+
+final upiPaymentSubmitProvider = StateNotifierProvider<UpiPaymentNotifier, AsyncValue<void>>((ref) {
+  return UpiPaymentNotifier(ref.watch(feesRepositoryProvider));
+});

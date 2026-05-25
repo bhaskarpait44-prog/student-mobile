@@ -38,4 +38,28 @@ class FeesRepository {
     final response = await _dio.get('/student/fees/payments');
     return response.data['data'];
   }
+
+  Future<Map<String, dynamic>> getSchoolUpiInfo() async {
+    final response = await _dio.get('/student/fees/school-upi');
+    return response.data['data'];
+  }
+
+  Future<void> submitUpiPaymentRequest({
+    required int invoiceId,
+    required double amount,
+    required String upiTransactionId,
+    String? note,
+  }) async {
+    await _dio.post('/student/fees/upi-payment-request', data: {
+      'invoice_id': invoiceId,
+      'amount': amount,
+      'upi_transaction_id': upiTransactionId,
+      'student_note': note,
+    });
+  }
+
+  Future<List<dynamic>> getMyUpiRequests() async {
+    final response = await _dio.get('/student/fees/upi-payment-requests');
+    return response.data['data']['requests'];
+  }
 }

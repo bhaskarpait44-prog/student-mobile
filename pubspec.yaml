@@ -19,6 +19,7 @@ dependencies:
 
   # HTTP
   dio: ^5.4.0
+  qr_flutter: ^4.1.0
 
   # Storage
   flutter_secure_storage: ^9.0.0

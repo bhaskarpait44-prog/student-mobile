@@ -6,6 +6,9 @@ class FeeInvoice {
   final double pending;
   final String dueDate;
   final String status;
+  final String? upiLatestStatus;
+  final String? upiRejectedReason;
+  final String? upiSubmittedAt;
 
   FeeInvoice({
     required this.id,
@@ -15,17 +18,69 @@ class FeeInvoice {
     required this.pending,
     required this.dueDate,
     required this.status,
+    this.upiLatestStatus,
+    this.upiRejectedReason,
+    this.upiSubmittedAt,
   });
 
   factory FeeInvoice.fromJson(Map<String, dynamic> json) {
     return FeeInvoice(
       id: json['id'],
-      feeType: json['fee_type'] ?? json['feeType'],
-      amount: (json['amount'] as num).toDouble(),
-      paid: (json['paid'] as num).toDouble(),
-      pending: (json['pending'] as num).toDouble(),
+      feeType: json['fee_type_name'] ?? json['fee_type'] ?? json['feeType'],
+      amount: (json['amount_due'] as num? ?? json['amount'] as num).toDouble(),
+      paid: (json['amount_paid'] as num? ?? json['paid'] as num).toDouble(),
+      pending: (json['balance_remaining'] as num? ?? json['pending'] as num).toDouble(),
       dueDate: json['due_date'] ?? json['dueDate'],
       status: json['status'],
+      upiLatestStatus: json['upi_latest_status'],
+      upiRejectedReason: json['upi_rejected_reason'],
+      upiSubmittedAt: json['upi_submitted_at'],
+    );
+  }
+}
+
+class SchoolUpiInfo {
+  final String upiId;
+  final String schoolName;
+
+  SchoolUpiInfo({required this.upiId, required this.schoolName});
+
+  factory SchoolUpiInfo.fromJson(Map<String, dynamic> json) {
+    return SchoolUpiInfo(
+      upiId: json['upi_id'] ?? '',
+      schoolName: json['school_name'] ?? '',
+    );
+  }
+}
+
+class UpiPaymentRequest {
+  final int id;
+  final int invoiceId;
+  final double amount;
+  final String upiTransactionId;
+  final String status;
+  final String createdAt;
+  final String? rejectedReason;
+
+  UpiPaymentRequest({
+    required this.id,
+    required this.invoiceId,
+    required this.amount,
+    required this.upiTransactionId,
+    required this.status,
+    required this.createdAt,
+    this.rejectedReason,
+  });
+
+  factory UpiPaymentRequest.fromJson(Map<String, dynamic> json) {
+    return UpiPaymentRequest(
+      id: json['id'],
+      invoiceId: json['invoice_id'],
+      amount: (json['amount'] as num).toDouble(),
+      upiTransactionId: json['upi_transaction_id'],
+      status: json['status'],
+      createdAt: json['created_at'],
+      rejectedReason: json['rejected_reason'],
     );
   }
 }
