@@ -48,7 +48,7 @@ class DashboardScreen extends ConsumerWidget {
                 if (data.birthdayBanner != null) _buildBirthdayBanner(data.birthdayBanner),
                 if (data.homeworkDueToday.isNotEmpty) _buildHomeworkAlert(data.homeworkDueToday),
                 const SizedBox(height: 20),
-                _buildStatsGrid(data),
+                _buildStatsGrid(context, data),
                 const SizedBox(height: 24),
                 const Text(
                   'Today\'s Schedule',
@@ -210,7 +210,7 @@ class DashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatsGrid(dynamic data) {
+  Widget _buildStatsGrid(BuildContext context, dynamic data) {
     return GridView.count(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -231,6 +231,7 @@ class DashboardScreen extends ConsumerWidget {
             backgroundColor: Colors.grey[200],
             color: _getAttendanceColor(data.attendance.percentage),
           ),
+          onTap: () => context.go('/attendance'),
         ),
         StatCard(
           title: 'Latest Result',
@@ -241,6 +242,7 @@ class DashboardScreen extends ConsumerWidget {
           extra: data.latestResult?.isWithheld == true 
             ? _buildBadge('WITHHELD', AppColors.danger) 
             : null,
+          onTap: () => context.go('/results'),
         ),
         StatCard(
           title: 'Fee Status',
@@ -248,6 +250,7 @@ class DashboardScreen extends ConsumerWidget {
           subtitle: data.fee.totalPending > 0 ? 'Next: ${data.fee.nextDueDate}' : 'No dues',
           icon: Icons.account_balance_wallet,
           iconColor: data.fee.totalPending > 0 ? AppColors.danger : AppColors.success,
+          onTap: () => context.push('/fees'),
         ),
         StatCard(
           title: 'Classes Today',
@@ -255,6 +258,7 @@ class DashboardScreen extends ConsumerWidget {
           subtitle: data.classesToday.next != null ? 'Next: ${data.classesToday.next}' : 'All done',
           icon: Icons.schedule,
           iconColor: AppColors.primary,
+          onTap: () => context.go('/timetable'),
         ),
       ],
     );

@@ -18,6 +18,7 @@ class MoreScreen extends ConsumerWidget {
         children: [
           _buildMenuSection('Academic', [
             _buildMenuItem(context, Icons.assignment, 'Homework', '/homework'),
+            _buildMenuItem(context, Icons.account_balance_wallet, 'Fees', '/fees'),
             _buildMenuItem(context, Icons.notifications, 'Notices', '/notices'),
             _buildMenuItem(context, Icons.book, 'Study Materials', '/materials'),
             _buildMenuItem(context, Icons.chat, 'Chat', '/chat'),
