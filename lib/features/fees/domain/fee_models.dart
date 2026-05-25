@@ -54,8 +54,8 @@ class SchoolUpiInfo {
 
   factory SchoolUpiInfo.fromJson(Map<String, dynamic> json) {
     return SchoolUpiInfo(
-      upiId: json['upi_id'] ?? '',
-      schoolName: json['school_name'] ?? '',
+      upiId: json['upi_id'] ?? json['school_upi'] ?? json['school_upi_id'] ?? '',
+      schoolName: json['school_name'] ?? json['name'] ?? '',
     );
   }
 }

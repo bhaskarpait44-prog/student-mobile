@@ -87,7 +87,18 @@ class _UpiPaymentSheetState extends ConsumerState<UpiPaymentSheet> {
                     if (info.upiId.isEmpty) {
                       return const Center(child: Text('School UPI ID not configured.'));
                     }
-                    final upiUrl = 'upi://pay?pa=${info.upiId}&pn=${info.schoolName}&am=${widget.invoice.pending}&cu=INR&tn=Fee Payment for ${widget.invoice.feeType}';
+                    final upiUri = Uri(
+                      scheme: 'upi',
+                      host: 'pay',
+                      queryParameters: {
+                        'pa': info.upiId,
+                        'pn': info.schoolName,
+                        'am': widget.invoice.pending.toStringAsFixed(2),
+                        'cu': 'INR',
+                        'tn': 'Fee Payment for ${widget.invoice.feeType}',
+                      },
+                    );
+                    final upiUrl = upiUri.toString();
                     
                     return Column(
                       children: [
