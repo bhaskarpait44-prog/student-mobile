@@ -49,13 +49,19 @@ class FeeInvoice {
 class SchoolUpiInfo {
   final String upiId;
   final String schoolName;
+  final bool upiEnabled;
 
-  SchoolUpiInfo({required this.upiId, required this.schoolName});
+  SchoolUpiInfo({
+    required this.upiId,
+    required this.schoolName,
+    required this.upiEnabled,
+  });
 
   factory SchoolUpiInfo.fromJson(Map<String, dynamic> json) {
     return SchoolUpiInfo(
       upiId: json['upi_id'] ?? json['school_upi'] ?? json['school_upi_id'] ?? '',
       schoolName: json['school_name'] ?? json['name'] ?? '',
+      upiEnabled: json['upi_enabled'] ?? true,
     );
   }
 }

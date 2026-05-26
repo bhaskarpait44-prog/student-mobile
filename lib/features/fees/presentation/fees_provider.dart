@@ -18,7 +18,7 @@ final feeSummaryProvider = FutureProvider<FeeSummary>((ref) async {
   return FeeSummary.fromJson(data);
 });
 
-final schoolUpiInfoProvider = FutureProvider<SchoolUpiInfo>((ref) async {
+final schoolUpiInfoProvider = FutureProvider.autoDispose<SchoolUpiInfo>((ref) async {
   final data = await ref.watch(feesRepositoryProvider).getSchoolUpiInfo();
   return SchoolUpiInfo.fromJson(data);
 });
