@@ -7,7 +7,7 @@ final achievementRepositoryProvider = Provider<ProfileRepository>((ref) {
   return ProfileRepository(ref.watch(apiClientProvider));
 });
 
-final achievementsProvider = FutureProvider<List<Achievement>>((ref) async {
+final achievementsProvider = FutureProvider.autoDispose<List<Achievement>>((ref) async {
   final data = await ref.watch(achievementRepositoryProvider).getAchievements();
   return data.map((e) => Achievement.fromJson(e)).toList();
 });

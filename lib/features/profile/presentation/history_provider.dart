@@ -7,7 +7,7 @@ final profileRepositoryProvider = Provider<ProfileRepository>((ref) {
   return ProfileRepository(ref.watch(apiClientProvider));
 });
 
-final academicHistoryProvider = FutureProvider<AcademicHistoryData>((ref) async {
+final academicHistoryProvider = FutureProvider.autoDispose<AcademicHistoryData>((ref) async {
   final data = await ref.watch(profileRepositoryProvider).getAcademicHistory();
   return AcademicHistoryData.fromJson(data);
 });

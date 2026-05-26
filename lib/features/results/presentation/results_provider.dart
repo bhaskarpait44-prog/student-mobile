@@ -7,12 +7,12 @@ final resultsRepositoryProvider = Provider<ResultsRepository>((ref) {
   return ResultsRepository(ref.watch(apiClientProvider));
 });
 
-final examResultsProvider = FutureProvider<List<ExamResult>>((ref) async {
+final examResultsProvider = FutureProvider.autoDispose<List<ExamResult>>((ref) async {
   final data = await ref.watch(resultsRepositoryProvider).getResults();
   return data.map((e) => ExamResult.fromJson(e)).toList();
 });
 
-final examResultDetailProvider = FutureProvider.family<ExamResultDetail, int>((ref, examId) async {
+final examResultDetailProvider = FutureProvider.autoDispose.family<ExamResultDetail, int>((ref, examId) async {
   final data = await ref.watch(resultsRepositoryProvider).getResultDetail(examId);
   return ExamResultDetail.fromJson(data);
 });

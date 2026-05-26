@@ -7,17 +7,17 @@ final attendanceRepositoryProvider = Provider<AttendanceRepository>((ref) {
   return AttendanceRepository(ref.watch(apiClientProvider));
 });
 
-final attendanceSummaryProvider = FutureProvider<AttendanceSummary>((ref) async {
+final attendanceSummaryProvider = FutureProvider.autoDispose<AttendanceSummary>((ref) async {
   final data = await ref.watch(attendanceRepositoryProvider).getAttendanceSummary();
   return AttendanceSummary.fromJson(data);
 });
 
-final attendanceTrendProvider = FutureProvider<List<MonthlyAttendance>>((ref) async {
+final attendanceTrendProvider = FutureProvider.autoDispose<List<MonthlyAttendance>>((ref) async {
   final data = await ref.watch(attendanceRepositoryProvider).getAttendanceTrend();
   return data.map((e) => MonthlyAttendance.fromJson(e)).toList();
 });
 
-final attendanceListProvider = FutureProvider.family<List<AttendanceDay>, ({int? month, int? year})>((ref, params) async {
+final attendanceListProvider = FutureProvider.autoDispose.family<List<AttendanceDay>, ({int? month, int? year})>((ref, params) async {
   final data = await ref.watch(attendanceRepositoryProvider).getAttendanceList(
     month: params.month,
     year: params.year,

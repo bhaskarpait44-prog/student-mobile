@@ -8,12 +8,12 @@ final homeworkRepositoryProvider = Provider<HomeworkRepository>((ref) {
   return HomeworkRepository(ref.watch(apiClientProvider));
 });
 
-final homeworkListProvider = FutureProvider.family<List<HomeworkItem>, String?>((ref, status) async {
+final homeworkListProvider = FutureProvider.autoDispose.family<List<HomeworkItem>, String?>((ref, status) async {
   final data = await ref.watch(homeworkRepositoryProvider).getHomework(status: status);
   return data.map((e) => HomeworkItem.fromJson(e)).toList();
 });
 
-final homeworkDetailProvider = FutureProvider.family<HomeworkItem, int>((ref, id) async {
+final homeworkDetailProvider = FutureProvider.autoDispose.family<HomeworkItem, int>((ref, id) async {
   final data = await ref.watch(homeworkRepositoryProvider).getHomeworkDetail(id);
   return HomeworkItem.fromJson(data);
 });
@@ -22,7 +22,7 @@ final noticeRepositoryProvider = Provider<NoticeRepository>((ref) {
   return NoticeRepository(ref.watch(apiClientProvider));
 });
 
-final noticesProvider = StateNotifierProvider<NoticesNotifier, AsyncValue<List<Notice>>>((ref) {
+final noticesProvider = StateNotifierProvider.autoDispose<NoticesNotifier, AsyncValue<List<Notice>>>((ref) {
   return NoticesNotifier(ref.watch(noticeRepositoryProvider));
 });
 

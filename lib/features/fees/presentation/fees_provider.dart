@@ -7,13 +7,13 @@ final feesRepositoryProvider = Provider<FeesRepository>((ref) {
   return FeesRepository(ref.watch(apiClientProvider));
 });
 
-final feeInvoicesProvider = FutureProvider<List<FeeInvoice>>((ref) async {
+final feeInvoicesProvider = FutureProvider.autoDispose<List<FeeInvoice>>((ref) async {
   final data = await ref.watch(feesRepositoryProvider).getInvoices();
   final list = (data['invoices'] as List? ?? []);
   return list.map((e) => FeeInvoice.fromJson(e)).toList();
 });
 
-final feeSummaryProvider = FutureProvider<FeeSummary>((ref) async {
+final feeSummaryProvider = FutureProvider.autoDispose<FeeSummary>((ref) async {
   final data = await ref.watch(feesRepositoryProvider).getFeeSummary();
   return FeeSummary.fromJson(data);
 });
@@ -23,7 +23,7 @@ final schoolUpiInfoProvider = FutureProvider.autoDispose<SchoolUpiInfo>((ref) as
   return SchoolUpiInfo.fromJson(data);
 });
 
-final myUpiRequestsProvider = FutureProvider<List<UpiPaymentRequest>>((ref) async {
+final myUpiRequestsProvider = FutureProvider.autoDispose<List<UpiPaymentRequest>>((ref) async {
   final list = await ref.watch(feesRepositoryProvider).getMyUpiRequests();
   return list.map((e) => UpiPaymentRequest.fromJson(e)).toList();
 });

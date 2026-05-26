@@ -7,10 +7,10 @@ final dashboardRepositoryProvider = Provider<DashboardRepository>((ref) {
   return DashboardRepository(ref.watch(apiClientProvider));
 });
 
-final dashboardProvider = FutureProvider<DashboardData>((ref) async {
+final dashboardProvider = FutureProvider.autoDispose<DashboardData>((ref) async {
   return ref.watch(dashboardRepositoryProvider).getDashboard();
 });
 
-final upcomingEventsProvider = FutureProvider<List<UpcomingEvent>>((ref) async {
+final upcomingEventsProvider = FutureProvider.autoDispose<List<UpcomingEvent>>((ref) async {
   return ref.watch(dashboardRepositoryProvider).getUpcomingEvents();
 });

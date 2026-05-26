@@ -7,7 +7,7 @@ final timetableRepositoryProvider = Provider<TimetableRepository>((ref) {
   return TimetableRepository(ref.watch(apiClientProvider));
 });
 
-final weeklyTimetableProvider = FutureProvider<Map<String, List<TimetableSlot>>>((ref) async {
+final weeklyTimetableProvider = FutureProvider.autoDispose<Map<String, List<TimetableSlot>>>((ref) async {
   final data = await ref.watch(timetableRepositoryProvider).getWeeklyTimetable();
   final list = (data['timetable'] as List? ?? []);
   
@@ -25,7 +25,7 @@ final weeklyTimetableProvider = FutureProvider<Map<String, List<TimetableSlot>>>
 
 String _capitalize(String s) => s.isEmpty ? '' : s[0].toUpperCase() + s.substring(1).toLowerCase();
 
-final examScheduleProvider = FutureProvider<List<ExamScheduleItem>>((ref) async {
+final examScheduleProvider = FutureProvider.autoDispose<List<ExamScheduleItem>>((ref) async {
   final data = await ref.watch(timetableRepositoryProvider).getExamSchedule();
   final exams = (data['exams'] as List? ?? []);
   

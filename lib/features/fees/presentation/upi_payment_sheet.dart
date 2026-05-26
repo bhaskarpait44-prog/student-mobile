@@ -15,6 +15,18 @@ class UpiPaymentSheet extends ConsumerStatefulWidget {
 }
 
 class _UpiPaymentSheetState extends ConsumerState<UpiPaymentSheet> {
+  final _formKey = GlobalKey<FormState>();
+  final _txController = TextEditingController();
+  final _noteController = TextEditingController();
+  bool _showForm = false;
+
+  @override
+  void dispose() {
+    _txController.dispose();
+    _noteController.dispose();
+    super.dispose();
+  }
+
   Future<void> _launchUpi(String url) async {
     final uri = Uri.parse(url);
     try {
@@ -37,12 +49,14 @@ class _UpiPaymentSheetState extends ConsumerState<UpiPaymentSheet> {
   }
 
   void _submit() {
-    ref.read(upiPaymentSubmitProvider.notifier).submit(
-      invoiceId: widget.invoice.id,
-      amount: widget.invoice.pending,
-      upiTransactionId: 'PAYMENT_PENDING',
-      note: 'Payment initiated via app',
-    );
+    if (_formKey.currentState!.validate()) {
+      ref.read(upiPaymentSubmitProvider.notifier).submit(
+        invoiceId: widget.invoice.id,
+        amount: widget.invoice.pending,
+        upiTransactionId: _txController.text,
+        note: _noteController.text,
+      );
+    }
   }
 
   @override
@@ -231,26 +245,87 @@ class _UpiPaymentSheetState extends ConsumerState<UpiPaymentSheet> {
                 ),
                 const SizedBox(height: 24),
 
-                SizedBox(
-                  width: double.infinity,
-                  height: 56,
-                  child: ElevatedButton(
-                    onPressed: submitState is AsyncLoading ? null : _submit,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                      elevation: 0,
+                if (!_showForm)
+                  SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Only show form if UPI is enabled
+                        final upiInfo = ref.read(schoolUpiInfoProvider).value;
+                        if (upiInfo?.upiEnabled ?? false) {
+                          setState(() => _showForm = true);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        elevation: 0,
+                      ),
+                      child: const Text('I have paid', style: TextStyle(fontWeight: FontWeight.bold)),
                     ),
-                    child: submitState is AsyncLoading
-                      ? const SizedBox(
-                          height: 20, 
-                          width: 20, 
-                          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-                        )
-                      : const Text('I have paid', style: TextStyle(fontWeight: FontWeight.bold)),
+                  )
+                else
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: _txController,
+                          keyboardType: TextInputType.text,
+                          decoration: InputDecoration(
+                            labelText: 'UPI Transaction ID / UTR',
+                            hintText: 'Enter 12-digit transaction ID',
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                            prefixIcon: const Icon(Icons.receipt_long),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) return 'Please enter transaction ID';
+                            if (value.length < 8) return 'ID too short';
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _noteController,
+                          decoration: InputDecoration(
+                            labelText: 'Note (Optional)',
+                            hintText: 'Add a note for the accountant',
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                            prefixIcon: const Icon(Icons.note),
+                          ),
+                          maxLines: 2,
+                        ),
+                        const SizedBox(height: 24),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 56,
+                          child: ElevatedButton(
+                            onPressed: submitState is AsyncLoading ? null : _submit,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                              elevation: 0,
+                            ),
+                            child: submitState is AsyncLoading
+                              ? const SizedBox(
+                                  height: 20, 
+                                  width: 20, 
+                                  child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                                )
+                              : const Text('Submit for Confirmation', style: TextStyle(fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        TextButton(
+                          onPressed: () => setState(() => _showForm = false),
+                          child: const Text('Go back to QR code'),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
                 const SizedBox(height: 40),
               ],
             ),
