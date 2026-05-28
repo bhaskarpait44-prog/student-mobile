@@ -56,7 +56,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               final ip = _ipController.text.trim();
               if (ip.isNotEmpty) {
                 await ref.read(authProvider.notifier).updateServerIp(ip);
-                if (mounted) Navigator.pop(context);
+                if (context.mounted) Navigator.pop(context);
               }
             },
             child: const Text('Save'),

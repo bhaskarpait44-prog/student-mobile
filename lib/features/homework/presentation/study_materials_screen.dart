@@ -6,7 +6,6 @@ import '../../../core/theme/app_colors.dart';
 import '../../../shared/screens/pdf_viewer_screen.dart';
 import '../domain/homework_models.dart';
 import 'homework_provider.dart';
-import '../../../core/network/api_providers.dart';
 
 final studyMaterialsProvider = FutureProvider<List<StudyMaterial>>((ref) async {
   final repo = ref.watch(noticeRepositoryProvider);
