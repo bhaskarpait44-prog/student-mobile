@@ -207,13 +207,22 @@ class _NoticeCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 12),
-              Text(
-                notice.title,
-                style: TextStyle(
-                  fontWeight: !notice.isRead ? FontWeight.bold : FontWeight.w500,
-                  fontSize: 16,
-                  color: AppColors.textPrimary,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      notice.title,
+                      style: TextStyle(
+                        fontWeight: !notice.isRead ? FontWeight.bold : FontWeight.w500,
+                        fontSize: 16,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                  ),
+                  if (notice.attachmentPath != null && notice.attachmentPath!.isNotEmpty)
+                    const Icon(Icons.picture_as_pdf, color: Colors.red, size: 20),
+                ],
               ),
               if (notice.content != null) ...[
                 const SizedBox(height: 8),

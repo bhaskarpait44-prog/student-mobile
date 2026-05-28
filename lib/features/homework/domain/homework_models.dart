@@ -51,6 +51,7 @@ class Notice {
   final bool isPinned;
   final bool isRead;
   final String source;
+  final String? attachmentPath;
 
   Notice({
     required this.id,
@@ -62,6 +63,7 @@ class Notice {
     required this.isPinned,
     required this.isRead,
     required this.source,
+    this.attachmentPath,
   });
 
   Notice copyWith({
@@ -74,6 +76,7 @@ class Notice {
     bool? isPinned,
     bool? isRead,
     String? source,
+    String? attachmentPath,
   }) {
     return Notice(
       id: id ?? this.id,
@@ -85,6 +88,7 @@ class Notice {
       isPinned: isPinned ?? this.isPinned,
       isRead: isRead ?? this.isRead,
       source: source ?? this.source,
+      attachmentPath: attachmentPath ?? this.attachmentPath,
     );
   }
 
@@ -118,6 +122,7 @@ class Notice {
       isPinned: toBool(json['is_pinned'] ?? json['isPinned']),
       isRead: toBool(json['is_read'] ?? json['isRead']),
       source: json['source'] ?? 'unified',
+      attachmentPath: json['attachment_path'] ?? json['attachmentPath'],
     );
   }
 }

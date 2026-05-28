@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import '../../../config/app_config.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../shared/screens/pdf_viewer_screen.dart';
 import '../domain/homework_models.dart';
 import 'homework_provider.dart';
 
@@ -85,6 +87,74 @@ class _NoticeDetailScreenState extends ConsumerState<NoticeDetailScreen> {
                 color: AppColors.textPrimary,
               ),
             ),
+
+            if (widget.notice.attachmentPath != null && widget.notice.attachmentPath!.isNotEmpty) ...[
+              const SizedBox(height: 32),
+              const Divider(),
+              const SizedBox(height: 16),
+              const Text(
+                'Attachment',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 12),
+              InkWell(
+                onTap: () {
+                   final url = widget.notice.attachmentPath!.startsWith('http') 
+                       ? widget.notice.attachmentPath! 
+                       : '${AppConfig.baseUrl}/${widget.notice.attachmentPath}';
+                   Navigator.of(context).push(
+                     MaterialPageRoute(
+                       builder: (context) => PdfViewerScreen(
+                         title: widget.notice.title,
+                         url: url,
+                       ),
+                     ),
+                   );
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey[300]!),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.picture_as_pdf, color: Colors.red, size: 32),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.notice.attachmentPath!.split('/').last,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const Text(
+                              'Tap to view PDF',
+                              style: TextStyle(
+                                color: AppColors.textSecondary,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Icon(Icons.chevron_right, color: AppColors.textSecondary),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+
             const SizedBox(height: 40),
             if (widget.notice.postedBy != null)
               Text(
