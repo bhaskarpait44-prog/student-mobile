@@ -18,6 +18,7 @@ import '../../features/fees/presentation/upi_request_history_screen.dart';
 import '../../features/homework/presentation/homework_screen.dart';
 import '../../features/homework/presentation/homework_detail_screen.dart';
 import '../../features/homework/presentation/notices_screen.dart';
+import '../../features/homework/presentation/study_materials_screen.dart';
 import '../../features/dashboard/presentation/more_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
 import '../../features/profile/presentation/history_screen.dart';
@@ -140,6 +141,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/notices',
         builder: (context, state) => const NoticesScreen(),
+      ),
+      GoRoute(
+        path: '/materials',
+        builder: (context, state) => const StudyMaterialsScreen(),
       ),
       GoRoute(
         path: '/profile',

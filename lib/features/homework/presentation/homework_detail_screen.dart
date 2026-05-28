@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
+import '../../../config/app_config.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../shared/screens/pdf_viewer_screen.dart';
 import '../domain/homework_models.dart';
 import 'homework_provider.dart';
 
@@ -17,6 +21,7 @@ class HomeworkDetailScreen extends ConsumerStatefulWidget {
 class _HomeworkDetailScreenState extends ConsumerState<HomeworkDetailScreen> {
   final _contentController = TextEditingController();
   bool _isSubmitting = false;
+  File? _selectedFile;
 
   @override
   void dispose() {
@@ -24,14 +29,33 @@ class _HomeworkDetailScreenState extends ConsumerState<HomeworkDetailScreen> {
     super.dispose();
   }
 
+  Future<void> _pickFile() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
+
+    if (result != null && result.files.single.path != null) {
+      setState(() {
+        _selectedFile = File(result.files.single.path!);
+      });
+    }
+  }
+
   Future<void> _submit() async {
-    if (_contentController.text.trim().isEmpty) return;
+    if (_contentController.text.trim().isEmpty && _selectedFile == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please provide some content or attach a PDF.')),
+      );
+      return;
+    }
 
     setState(() => _isSubmitting = true);
     try {
       await ref.read(homeworkRepositoryProvider).submitHomework(
         widget.homeworkId,
         content: _contentController.text.trim(),
+        attachmentPath: _selectedFile?.path,
       );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -119,6 +143,74 @@ class _HomeworkDetailScreenState extends ConsumerState<HomeworkDetailScreen> {
             item.description ?? 'No description provided.',
             style: const TextStyle(fontSize: 15, color: AppColors.textSecondary, height: 1.6),
           ),
+
+          if (item.attachmentPath != null && item.attachmentPath!.isNotEmpty) ...[
+            const SizedBox(height: 32),
+            const Divider(),
+            const SizedBox(height: 16),
+            const Text(
+              'Attachment',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 12),
+            InkWell(
+              onTap: () {
+                 final url = item.attachmentPath!.startsWith('http') 
+                     ? item.attachmentPath! 
+                     : '${AppConfig.baseUrl}/${item.attachmentPath}';
+                 Navigator.of(context).push(
+                   MaterialPageRoute(
+                     builder: (context) => PdfViewerScreen(
+                       title: item.title,
+                       url: url,
+                     ),
+                   ),
+                 );
+              },
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey[300]!),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.picture_as_pdf, color: Colors.red, size: 32),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.attachmentPath!.split('/').last,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const Text(
+                            'Tap to view PDF',
+                            style: TextStyle(
+                              color: AppColors.textSecondary,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(Icons.chevron_right, color: AppColors.textSecondary),
+                  ],
+                ),
+              ),
+            ),
+          ],
+
           const SizedBox(height: 40),
           if (!isSubmitted) ...[
             const Text(
@@ -134,6 +226,39 @@ class _HomeworkDetailScreenState extends ConsumerState<HomeworkDetailScreen> {
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 filled: true,
                 fillColor: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 16),
+            InkWell(
+              onTap: _pickFile,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey[400]!),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.attach_file, color: AppColors.primary),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        _selectedFile == null ? 'Attach Submission PDF' : _selectedFile!.path.split('/').last,
+                        style: TextStyle(
+                          color: _selectedFile == null ? AppColors.textSecondary : AppColors.textPrimary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    if (_selectedFile != null)
+                      IconButton(
+                        icon: const Icon(Icons.close, size: 20),
+                        onPressed: () => setState(() => _selectedFile = null),
+                      ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 24),
@@ -164,9 +289,11 @@ class _HomeworkDetailScreenState extends ConsumerState<HomeworkDetailScreen> {
                 children: [
                   Icon(Icons.check_circle, color: AppColors.success),
                   SizedBox(width: 12),
-                  Text(
-                    'You have submitted this homework.',
-                    style: TextStyle(color: AppColors.success, fontWeight: FontWeight.w500),
+                  Expanded(
+                    child: Text(
+                      'You have submitted this homework.',
+                      style: TextStyle(color: AppColors.success, fontWeight: FontWeight.w500),
+                    ),
                   ),
                 ],
               ),
@@ -207,4 +334,3 @@ class _HomeworkDetailScreenState extends ConsumerState<HomeworkDetailScreen> {
     );
   }
 }
-

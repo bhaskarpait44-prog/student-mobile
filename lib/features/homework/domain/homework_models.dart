@@ -7,6 +7,7 @@ class HomeworkItem {
   final String submissionType;
   final String? submissionStatus;
   final String? description;
+  final String? attachmentPath;
 
   HomeworkItem({
     required this.id,
@@ -17,6 +18,7 @@ class HomeworkItem {
     required this.submissionType,
     this.submissionStatus,
     this.description,
+    this.attachmentPath,
   });
 
   factory HomeworkItem.fromJson(Map<String, dynamic> json) {
@@ -37,6 +39,7 @@ class HomeworkItem {
       submissionType: json['submission_type'] ?? json['submissionType'] ?? 'online',
       submissionStatus: json['submission_status'] ?? json['submissionStatus'],
       description: json['description'],
+      attachmentPath: json['attachment_path'] ?? json['attachmentPath'],
     );
   }
 }
@@ -123,6 +126,52 @@ class Notice {
       isRead: toBool(json['is_read'] ?? json['isRead']),
       source: json['source'] ?? 'unified',
       attachmentPath: json['attachment_path'] ?? json['attachmentPath'],
+    );
+  }
+}
+
+class StudyMaterial {
+  final int id;
+  final String title;
+  final String? description;
+  final String filePath;
+  final String fileType;
+  final int fileSize;
+  final String subjectName;
+  final String teacherName;
+  final String createdAt;
+
+  StudyMaterial({
+    required this.id,
+    required this.title,
+    this.description,
+    required this.filePath,
+    required this.fileType,
+    required this.fileSize,
+    required this.subjectName,
+    required this.teacherName,
+    required this.createdAt,
+  });
+
+  factory StudyMaterial.fromJson(Map<String, dynamic> json) {
+    int toInt(dynamic value) {
+      if (value == null) return 0;
+      if (value is int) return value;
+      if (value is String) return int.tryParse(value) ?? 0;
+      if (value is num) return value.toInt();
+      return 0;
+    }
+
+    return StudyMaterial(
+      id: toInt(json['id']),
+      title: json['title'] ?? '',
+      description: json['description'],
+      filePath: json['file_path'] ?? '',
+      fileType: json['file_type'] ?? 'application/pdf',
+      fileSize: toInt(json['file_size']),
+      subjectName: json['subject_name'] ?? '',
+      teacherName: json['teacher_name'] ?? '',
+      createdAt: json['created_at'] ?? '',
     );
   }
 }

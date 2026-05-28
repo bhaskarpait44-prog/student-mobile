@@ -16,11 +16,19 @@ class HomeworkRepository {
     return response.data['data'];
   }
 
-  Future<void> submitHomework(int id, {String? content, String? attachment}) async {
-    await _dio.post('/student/homework/$id/submit', data: {
-      'submission_content': content,
-      'attachment_path': attachment,
-    });
+  Future<void> submitHomework(int id, {String? content, String? attachmentPath}) async {
+    final formData = FormData();
+    if (content != null) {
+      formData.fields.add(MapEntry('submission_content', content));
+    }
+    if (attachmentPath != null) {
+      formData.files.add(MapEntry(
+        'attachment',
+        await MultipartFile.fromFile(attachmentPath),
+      ));
+    }
+    
+    await _dio.post('/student/homework/$id/submit', data: formData);
   }
 }
 
@@ -37,5 +45,10 @@ class NoticeRepository {
     await _dio.post('/notices/student/$id/read', queryParameters: {
       'source': source,
     });
+  }
+
+  Future<List<dynamic>> getMaterials() async {
+    final response = await _dio.get('/student/materials');
+    return response.data['data']['materials'] ?? response.data['data'] ?? [];
   }
 }
