@@ -8,7 +8,7 @@ class AttendanceRepository {
 
   Future<Map<String, dynamic>> getAttendanceSummary() async {
     final response = await _dio.get('/student/attendance/summary');
-    return response.data['data'];
+    return response.data['data'] ?? {};
   }
 
   Future<List<dynamic>> getAttendanceList({int? month, int? year}) async {
@@ -49,7 +49,7 @@ class ResultsRepository {
 
   Future<Map<String, dynamic>> getResultDetail(int examId) async {
     final response = await _dio.get('/student/results/$examId');
-    return response.data['data'];
+    return response.data['data'] ?? {};
   }
 
   Future<Uint8List> downloadResultPdf(int examId) async {
@@ -66,9 +66,14 @@ class ProfileRepository {
 
   ProfileRepository(this._dio);
 
+  Future<Map<String, dynamic>> getProfile() async {
+    final response = await _dio.get('/student/profile');
+    return response.data['data'] ?? {};
+  }
+
   Future<Map<String, dynamic>> getAcademicHistory() async {
-    final response = await _dio.get('/student/academic-history');
-    return response.data['data'];
+    final response = await _dio.get('/student/history');
+    return response.data['data'] ?? {};
   }
 
   Future<List<dynamic>> getAchievements() async {

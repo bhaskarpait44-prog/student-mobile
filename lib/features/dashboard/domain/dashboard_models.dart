@@ -202,8 +202,8 @@ class ClassesToday {
   factory ClassesToday.fromJson(Map<String, dynamic> json) {
     return ClassesToday(
       total: json['total_periods'] ?? 0,
-      current: json['current_period'] != null ? json['current_period']['subject_name'] : null,
-      next: json['next_period'] != null ? json['next_period']['subject_name'] : null,
+      current: json['current_period']?['subject_name'],
+      next: json['next_period']?['subject_name'],
     );
   }
 }

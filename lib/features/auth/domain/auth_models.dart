@@ -22,10 +22,10 @@ class AuthUser {
       id: json['id'],
       name: json['name'],
       role: json['role'] ?? 'student',
-      studentId: json['studentId'] ?? json['id'],
-      schoolId: json['school_id'] ?? json['schoolId'],
+      studentId: json['student_id'] ?? json['id'],
+      schoolId: json['school_id'] ?? 0,
       email: json['email'],
-      admissionNo: json['admission_no'] ?? json['admissionNo'] ?? '',
+      admissionNo: json['admission_no'] ?? '',
     );
   }
 
@@ -33,10 +33,10 @@ class AuthUser {
     'id': id,
     'name': name,
     'role': role,
-    'studentId': studentId,
-    'schoolId': schoolId,
+    'student_id': studentId,
+    'school_id': schoolId,
     'email': email,
-    'admissionNo': admissionNo,
+    'admission_no': admissionNo,
   };
 }
 

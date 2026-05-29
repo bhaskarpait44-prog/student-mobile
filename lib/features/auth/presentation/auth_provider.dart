@@ -11,13 +11,14 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 });
 
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
-  return AuthNotifier(ref.watch(authRepositoryProvider));
+  return AuthNotifier(ref.watch(authRepositoryProvider), ref);
 });
 
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthRepository _repository;
+  final Ref _ref;
 
-  AuthNotifier(this._repository) : super(AuthState()) {
+  AuthNotifier(this._repository, this._ref) : super(AuthState()) {
     _init();
   }
 
@@ -28,6 +29,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final savedIp = await _repository.getSavedServerIp();
       if (savedIp != null) {
         AppConfig.setServerIp(savedIp);
+        _ref.read(serverIpProvider.notifier).state = savedIp;
       }
 
       final user = await _repository.getSavedUser();
@@ -92,7 +94,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> updateServerIp(String ip) async {
     await _repository.saveServerIp(ip);
     AppConfig.setServerIp(ip);
-    state = state.copyWith(); // Trigger rebuild if needed, though AppConfig is static
+    _ref.read(serverIpProvider.notifier).state = ip;
   }
 
   Future<void> logout() async {

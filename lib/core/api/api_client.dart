@@ -4,14 +4,15 @@ import '../../config/app_config.dart';
 import '../storage/secure_storage.dart';
 
 final apiClientProvider = Provider<Dio>((ref) {
+  final ip = ref.watch(serverIpProvider);
   final dio = Dio(BaseOptions(
-    baseUrl: AppConfig.apiBaseUrl,
+    baseUrl: 'http://$ip:5000/api',
     connectTimeout: const Duration(seconds: 30),
     receiveTimeout: const Duration(seconds: 30),
     headers: {'Content-Type': 'application/json'},
   ));
 
-  dio.interceptors.add(AuthInterceptor(ref));
+  dio.interceptors.add(AuthInterceptor(dio, ref));
   dio.interceptors.add(LogInterceptor(
     requestHeader: true,
     requestBody: true,
@@ -24,10 +25,12 @@ final apiClientProvider = Provider<Dio>((ref) {
 });
 
 class AuthInterceptor extends Interceptor {
+  final Dio _dio;
+  final Ref _ref;
   final _storage = SecureStorage();
   bool _isRefreshing = false;
 
-  AuthInterceptor(Ref ref);
+  AuthInterceptor(this._dio, this._ref);
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
@@ -45,8 +48,9 @@ class AuthInterceptor extends Interceptor {
       try {
         final refreshToken = await _storage.getRefreshToken();
         if (refreshToken != null) {
-          final dio = Dio(BaseOptions(baseUrl: AppConfig.apiBaseUrl));
-          final response = await dio.post('/auth/refresh', data: {
+          final ip = _ref.read(serverIpProvider);
+          final refreshDio = Dio(BaseOptions(baseUrl: 'http://$ip:5000/api'));
+          final response = await refreshDio.post('/auth/refresh', data: {
             'refresh_token': refreshToken,
           });
 
@@ -58,11 +62,11 @@ class AuthInterceptor extends Interceptor {
             await _storage.saveToken(newToken);
             await _storage.saveRefreshToken(newRefreshToken);
 
-            // Retry the original request
+            // Retry the original request using the original Dio instance
             final options = err.requestOptions;
             options.headers['Authorization'] = 'Bearer $newToken';
             
-            final retryResponse = await dio.fetch(options);
+            final retryResponse = await _dio.fetch(options);
             _isRefreshing = false;
             return handler.resolve(retryResponse);
           }
