@@ -25,13 +25,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> _init() async {
     state = state.copyWith(isLoading: true);
     try {
-      // Load saved IP
-      final savedIp = await _repository.getSavedServerIp();
-      if (savedIp != null) {
-        AppConfig.setServerIp(savedIp);
-        _ref.read(serverIpProvider.notifier).state = savedIp;
-      }
-
       final user = await _repository.getSavedUser();
       final token = await _repository.getSavedToken();
       final pin = await _repository.getSavedPin();
@@ -89,12 +82,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
       return true;
     }
     return false;
-  }
-
-  Future<void> updateServerIp(String ip) async {
-    await _repository.saveServerIp(ip);
-    AppConfig.setServerIp(ip);
-    _ref.read(serverIpProvider.notifier).state = ip;
   }
 
   Future<void> logout() async {

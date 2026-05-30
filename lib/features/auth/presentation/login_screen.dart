@@ -15,55 +15,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _identifierController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _ipController = TextEditingController(text: AppConfig.serverIp);
   bool _obscurePassword = true;
 
   @override
   void dispose() {
     _identifierController.dispose();
     _passwordController.dispose();
-    _ipController.dispose();
     super.dispose();
-  }
-
-  void _showSettingsDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Server Settings'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('Enter your local IPv4 address:'),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _ipController,
-              decoration: const InputDecoration(
-                hintText: 'e.g. 192.168.1.5',
-                labelText: 'Server IP',
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              final ip = _ipController.text.trim();
-              if (ip.isNotEmpty) {
-                await ref.read(authProvider.notifier).updateServerIp(ip);
-                if (context.mounted) Navigator.pop(context);
-              }
-            },
-            child: const Text('Save'),
-          ),
-        ],
-      ),
-    );
   }
 
   void _handleLogin() {
@@ -182,15 +140,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   ],
                 ),
-              ),
-            ),
-            Positioned(
-              top: 8,
-              right: 8,
-              child: IconButton(
-                icon: const Icon(Icons.settings_outlined, color: AppColors.textSecondary),
-                onPressed: _showSettingsDialog,
-                tooltip: 'Server Settings',
               ),
             ),
           ],

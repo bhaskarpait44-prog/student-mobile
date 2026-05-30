@@ -4,9 +4,8 @@ import '../../config/app_config.dart';
 import '../storage/secure_storage.dart';
 
 final apiClientProvider = Provider<Dio>((ref) {
-  final ip = ref.watch(serverIpProvider);
   final dio = Dio(BaseOptions(
-    baseUrl: 'http://$ip:5000/api',
+    baseUrl: AppConfig.apiBaseUrl,
     connectTimeout: const Duration(seconds: 30),
     receiveTimeout: const Duration(seconds: 30),
     headers: {'Content-Type': 'application/json'},
@@ -48,8 +47,7 @@ class AuthInterceptor extends Interceptor {
       try {
         final refreshToken = await _storage.getRefreshToken();
         if (refreshToken != null) {
-          final ip = _ref.read(serverIpProvider);
-          final refreshDio = Dio(BaseOptions(baseUrl: 'http://$ip:5000/api'));
+          final refreshDio = Dio(BaseOptions(baseUrl: AppConfig.apiBaseUrl));
           final response = await refreshDio.post('/auth/refresh', data: {
             'refresh_token': refreshToken,
           });
