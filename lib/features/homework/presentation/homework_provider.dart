@@ -2,10 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/repositories/homework_notice_repositories.dart';
+import '../../../core/storage/cache_service.dart';
 import '../domain/homework_models.dart';
 
 final homeworkRepositoryProvider = Provider<HomeworkRepository>((ref) {
-  return HomeworkRepository(ref.watch(apiClientProvider));
+  return HomeworkRepository(ref.watch(apiClientProvider), ref.watch(cacheServiceProvider));
 });
 
 final homeworkListProvider = FutureProvider.autoDispose.family<List<HomeworkItem>, String?>((ref, status) async {
@@ -19,7 +20,7 @@ final homeworkDetailProvider = FutureProvider.autoDispose.family<HomeworkItem, i
 });
 
 final noticeRepositoryProvider = Provider<NoticeRepository>((ref) {
-  return NoticeRepository(ref.watch(apiClientProvider));
+  return NoticeRepository(ref.watch(apiClientProvider), ref.watch(cacheServiceProvider));
 });
 
 final noticesProvider = StateNotifierProvider.autoDispose<NoticesNotifier, AsyncValue<List<Notice>>>((ref) {

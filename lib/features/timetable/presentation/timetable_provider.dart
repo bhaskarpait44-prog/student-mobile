@@ -1,10 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/repositories/extra_repositories.dart';
+import '../../../core/storage/cache_service.dart';
 import '../domain/timetable_models.dart';
 
 final timetableRepositoryProvider = Provider<TimetableRepository>((ref) {
-  return TimetableRepository(ref.watch(apiClientProvider));
+  return TimetableRepository(ref.watch(apiClientProvider), ref.watch(cacheServiceProvider));
 });
 
 final weeklyTimetableProvider = FutureProvider.autoDispose<Map<String, List<TimetableSlot>>>((ref) async {

@@ -1,10 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/repositories/extra_repositories.dart';
+import '../../../core/storage/cache_service.dart';
 import '../domain/fee_models.dart';
 
 final feesRepositoryProvider = Provider<FeesRepository>((ref) {
-  return FeesRepository(ref.watch(apiClientProvider));
+  return FeesRepository(ref.watch(apiClientProvider), ref.watch(cacheServiceProvider));
 });
 
 final feeInvoicesProvider = FutureProvider.autoDispose<List<FeeInvoice>>((ref) async {

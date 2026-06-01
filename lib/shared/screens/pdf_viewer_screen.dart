@@ -29,14 +29,25 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
   Future<void> _downloadPdf() async {
     if (widget.url == null) return;
 
-    final status = await Permission.storage.request();
-    if (!status.isGranted && !Platform.isIOS) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Storage permission is required to download files.')),
-        );
+    if (Platform.isAndroid) {
+      final statuses = await [
+        Permission.storage,
+        Permission.photos,
+        Permission.videos,
+        Permission.audio,
+      ].request();
+      
+      final granted = statuses[Permission.storage]!.isGranted || 
+                     statuses[Permission.photos]!.isGranted;
+
+      if (!granted) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Permission is required to download files.')),
+          );
+        }
+        return;
       }
-      return;
     }
 
     setState(() {

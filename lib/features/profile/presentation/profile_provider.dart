@@ -1,9 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/repositories/student_repositories.dart';
+import '../../../core/storage/cache_service.dart';
 
 final profileRepositoryProvider = Provider<ProfileRepository>((ref) {
-  return ProfileRepository(ref.watch(apiClientProvider));
+  return ProfileRepository(ref.watch(apiClientProvider), ref.watch(cacheServiceProvider));
 });
 
 final profileProvider = FutureProvider<Map<String, dynamic>>((ref) async {

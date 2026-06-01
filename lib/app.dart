@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/theme/app_theme.dart';
 import 'core/navigation/app_router.dart';
+import 'shared/widgets/connectivity_banner.dart';
 
 class EduCoreApp extends ConsumerWidget {
   const EduCoreApp({super.key});
@@ -15,6 +16,9 @@ class EduCoreApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       routerConfig: router,
+      builder: (context, child) {
+        return ConnectivityBanner(child: child ?? const SizedBox.shrink());
+      },
     );
   }
 }

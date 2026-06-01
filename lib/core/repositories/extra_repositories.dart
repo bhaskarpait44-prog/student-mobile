@@ -1,47 +1,113 @@
 import 'package:dio/dio.dart';
+import '../storage/cache_service.dart';
 
 class TimetableRepository {
   final Dio _dio;
-  TimetableRepository(this._dio);
+  final CacheService _cache;
+  TimetableRepository(this._dio, this._cache);
 
   Future<Map<String, dynamic>> getWeeklyTimetable() async {
-    final response = await _dio.get('/student/timetable');
-    return response.data['data'] ?? {};
+    const cacheKey = 'timetable_weekly';
+    try {
+      final response = await _dio.get('/student/timetable');
+      final data = response.data['data'] ?? {};
+      await _cache.set(cacheKey, data);
+      return data;
+    } catch (e) {
+      final cachedData = await _cache.get(cacheKey);
+      if (cachedData != null) return cachedData;
+      rethrow;
+    }
   }
 
   Future<Map<String, dynamic>> getTodaySchedule() async {
-    final response = await _dio.get('/student/timetable/today');
-    return response.data['data'] ?? {};
+    const cacheKey = 'timetable_today';
+    try {
+      final response = await _dio.get('/student/timetable/today');
+      final data = response.data['data'] ?? {};
+      await _cache.set(cacheKey, data);
+      return data;
+    } catch (e) {
+      final cachedData = await _cache.get(cacheKey);
+      if (cachedData != null) return cachedData;
+      rethrow;
+    }
   }
 
   Future<Map<String, dynamic>> getExamSchedule() async {
-    final response = await _dio.get('/student/timetable/exam-schedule');
-    return response.data['data'] ?? {};
+    const cacheKey = 'timetable_exam';
+    try {
+      final response = await _dio.get('/student/timetable/exam-schedule');
+      final data = response.data['data'] ?? {};
+      await _cache.set(cacheKey, data);
+      return data;
+    } catch (e) {
+      final cachedData = await _cache.get(cacheKey);
+      if (cachedData != null) return cachedData;
+      rethrow;
+    }
   }
 }
 
 class FeesRepository {
   final Dio _dio;
-  FeesRepository(this._dio);
+  final CacheService _cache;
+  FeesRepository(this._dio, this._cache);
 
   Future<Map<String, dynamic>> getInvoices() async {
-    final response = await _dio.get('/student/fees');
-    return response.data['data'] ?? {};
+    const cacheKey = 'fees_invoices';
+    try {
+      final response = await _dio.get('/student/fees');
+      final data = response.data['data'] ?? {};
+      await _cache.set(cacheKey, data);
+      return data;
+    } catch (e) {
+      final cachedData = await _cache.get(cacheKey);
+      if (cachedData != null) return cachedData;
+      rethrow;
+    }
   }
 
   Future<Map<String, dynamic>> getFeeSummary() async {
-    final response = await _dio.get('/student/fees/summary');
-    return response.data['data'] ?? {};
+    const cacheKey = 'fees_summary';
+    try {
+      final response = await _dio.get('/student/fees/summary');
+      final data = response.data['data'] ?? {};
+      await _cache.set(cacheKey, data);
+      return data;
+    } catch (e) {
+      final cachedData = await _cache.get(cacheKey);
+      if (cachedData != null) return cachedData;
+      rethrow;
+    }
   }
 
   Future<Map<String, dynamic>> getPayments() async {
-    final response = await _dio.get('/student/fees/payments');
-    return response.data['data'] ?? {};
+    const cacheKey = 'fees_payments';
+    try {
+      final response = await _dio.get('/student/fees/payments');
+      final data = response.data['data'] ?? {};
+      await _cache.set(cacheKey, data);
+      return data;
+    } catch (e) {
+      final cachedData = await _cache.get(cacheKey);
+      if (cachedData != null) return cachedData;
+      rethrow;
+    }
   }
 
   Future<Map<String, dynamic>> getSchoolUpiInfo() async {
-    final response = await _dio.get('/student/fees/school-upi');
-    return response.data['data'] ?? {};
+    const cacheKey = 'fees_upi_info';
+    try {
+      final response = await _dio.get('/student/fees/school-upi');
+      final data = response.data['data'] ?? {};
+      await _cache.set(cacheKey, data);
+      return data;
+    } catch (e) {
+      final cachedData = await _cache.get(cacheKey);
+      if (cachedData != null) return cachedData;
+      rethrow;
+    }
   }
 
   Future<void> submitUpiPaymentRequest({
@@ -59,7 +125,16 @@ class FeesRepository {
   }
 
   Future<List<dynamic>> getMyUpiRequests() async {
-    final response = await _dio.get('/student/fees/upi-payment-requests');
-    return response.data['data']['requests'] ?? [];
+    const cacheKey = 'fees_upi_requests';
+    try {
+      final response = await _dio.get('/student/fees/upi-payment-requests');
+      final data = response.data['data']['requests'] ?? [];
+      await _cache.set(cacheKey, data);
+      return data;
+    } catch (e) {
+      final cachedData = await _cache.get(cacheKey);
+      if (cachedData != null) return cachedData;
+      rethrow;
+    }
   }
 }
