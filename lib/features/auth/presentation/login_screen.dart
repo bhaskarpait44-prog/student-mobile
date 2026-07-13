@@ -33,6 +33,56 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
+  void _showServerSettingsDialog(BuildContext context) {
+    final controller = TextEditingController(text: AppConfig.serverIp);
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Server Settings'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Enter server IP address or domain (e.g. 192.168.1.10:5000 or eduhard-backend.onrender.com)',
+              style: TextStyle(fontSize: 12),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: controller,
+              decoration: const InputDecoration(
+                labelText: 'Server Host/IP',
+                hintText: '192.168.1.10:5000',
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              String ip = controller.text.trim();
+              if (ip.isNotEmpty) {
+                await AppConfig.setServerIp(ip);
+                // Also update the provider
+                ref.read(serverIpProvider.notifier).state = ip;
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Server URL updated to: ${AppConfig.baseUrl}')),
+                  );
+                }
+              }
+              if (mounted) Navigator.pop(context);
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
@@ -42,6 +92,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       body: SafeArea(
         child: Stack(
           children: [
+            Positioned(
+              top: 10,
+              right: 10,
+              child: IconButton(
+                icon: const Icon(Icons.settings),
+                onPressed: () => _showServerSettingsDialog(context),
+              ),
+            ),
             SingleChildScrollView(
               padding: const EdgeInsets.all(24.0),
               child: Form(
