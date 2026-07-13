@@ -4,6 +4,9 @@ import '../../config/app_config.dart';
 import '../storage/secure_storage.dart';
 
 final apiClientProvider = Provider<Dio>((ref) {
+  // Watch serverIpProvider to recreate the Dio client if the IP address changes
+  ref.watch(serverIpProvider);
+
   final dio = Dio(BaseOptions(
     baseUrl: AppConfig.apiBaseUrl,
     connectTimeout: const Duration(seconds: 30),
