@@ -5,7 +5,7 @@ final serverIpProvider = StateProvider<String>((ref) => AppConfig.serverIp);
 
 class AppConfig {
   static const String appName = 'EduCore Student';
-  static const String defaultServerIp = 'eduhard-backend.onrender.com';
+  static const String defaultServerIp = '10.226.18.216:5000';
   
   static String _currentServerIp = defaultServerIp;
 
