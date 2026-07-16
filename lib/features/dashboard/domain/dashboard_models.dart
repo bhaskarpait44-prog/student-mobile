@@ -10,6 +10,8 @@ class DashboardData {
   final MotivationalMessage? motivational;
   final BirthdayBanner? birthdayBanner;
   final String today;
+  final bool isHoliday;
+  final String holidayName;
 
   DashboardData({
     required this.student,
@@ -23,6 +25,8 @@ class DashboardData {
     this.motivational,
     this.birthdayBanner,
     required this.today,
+    required this.isHoliday,
+    required this.holidayName,
   });
 
   factory DashboardData.fromJson(Map<String, dynamic> json) {
@@ -46,6 +50,8 @@ class DashboardData {
       motivational: json['motivational'] != null ? MotivationalMessage.fromJson(json['motivational']) : null,
       birthdayBanner: json['birthday_banner'] != null ? BirthdayBanner.fromJson(json['birthday_banner']) : null,
       today: json['today'] ?? '',
+      isHoliday: json['is_holiday'] ?? false,
+      holidayName: json['holiday_name'] ?? '',
     );
   }
 }
