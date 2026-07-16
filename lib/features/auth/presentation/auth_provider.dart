@@ -2,9 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/auth_repository.dart';
 import '../domain/auth_models.dart';
 import '../../../core/api/api_client.dart';
+import '../../../core/api/api_error_handler.dart';
 import '../../../core/services/notification_service.dart';
-
-import '../../../config/app_config.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   return AuthRepository(ref.watch(apiClientProvider));
@@ -43,7 +42,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         token: null,
         storedPin: null,
         isLoading: false,
-        error: e.toString(),
+        error: ApiErrorHandler.getErrorMessage(e),
       );
     }
   }
@@ -67,7 +66,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         NotificationService.registerToken(result['token']);
       }
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(isLoading: false, error: ApiErrorHandler.getErrorMessage(e));
     }
   }
 

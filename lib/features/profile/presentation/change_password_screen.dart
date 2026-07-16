@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/api/api_error_handler.dart';
 import 'change_password_provider.dart';
 
 class ChangePasswordScreen extends ConsumerStatefulWidget {
@@ -39,7 +40,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
         if (state.hasError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.error.toString()),
+              content: Text(ApiErrorHandler.getErrorMessage(state.error!)),
               backgroundColor: AppColors.danger,
             ),
           );

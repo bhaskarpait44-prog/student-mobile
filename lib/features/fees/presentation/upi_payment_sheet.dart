@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/api/api_error_handler.dart';
 import '../domain/fee_models.dart';
 import 'fees_provider.dart';
 
@@ -74,7 +75,7 @@ class _UpiPaymentSheetState extends ConsumerState<UpiPaymentSheet> {
         Navigator.pop(context);
       } else if (next is AsyncError) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${next.error}')),
+          SnackBar(content: Text('Error: ${ApiErrorHandler.getErrorMessage(next.error)}')),
         );
       }
     });
